@@ -1,5 +1,8 @@
 source "https://rubygems.org"
 
+# Padrino Stable Gem
+gem "padrino", "0.12.4"
+
 # Project requirements
 gem "rake"
 
@@ -10,16 +13,17 @@ gem "sqlite3"
 gem "sequel"
 
 # Test requirements
-gem "rspec", group: "test"
-gem "capybara", group: "test"
-gem "cucumber", group: "test"
-gem "rack-test", require: "rack/test", group: "test"
+group "test" do
+    gem "rspec"
+    gem "capybara"
+    gem "rack-test", require: "rack/test"
+    gem "cucumber"
+    gem "rubocop"
 
-# Padrino Stable Gem
-gem "padrino", "0.12.4"
-
-# Linter
-gem "rubocop"
+    # Linter
+end
 
 # Server
-gem "puma"
+group "development", "production" do
+    gem "puma"
+end
