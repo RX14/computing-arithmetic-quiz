@@ -21,3 +21,5 @@ gem "padrino", "0.12.4"
 # Linter
 gem "rubocop"
 
+# Server
+gem "puma"
