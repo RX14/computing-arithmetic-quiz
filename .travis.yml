@@ -4,9 +4,6 @@ env:
     global:
         - RACK_ENV=test
 
-before_install:
-    - "echo 'gem: --no-ri --no-rdoc' > ~/.gemrc"
-
 install:
     - bundle install --jobs=3 --without production development
 
