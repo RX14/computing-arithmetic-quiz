@@ -11,6 +11,7 @@ SimpleCov.start do
 
     add_filter "/config/"
     add_filter "/features/"
+    add_filter "/lib/sass_initializer.rb"
 
     add_group "app:controllers", "app/controllers"
     add_group "app:helpers", "app/helpers"
