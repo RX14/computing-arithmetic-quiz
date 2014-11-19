@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 
 # Padrino Stable Gem
-gem "padrino", "0.12.4"
+gem "padrino"
 
 # Project requirements
 gem "rake"
@@ -22,10 +22,10 @@ group "test" do
     # Linter
     gem "rubocop"
 
-    gem "simplecov", "0.9.1", require: false
-    gem "coveralls", "0.7.1", require: false
-    gem "codeclimate-test-reporter", "0.4.1", require: false
-    gem "simplecov-summary", require: false, github: "inossidabile/simplecov-summary", ref: "e140ad"
+    gem "simplecov", require: false
+    gem "coveralls", require: false
+    gem "codeclimate-test-reporter", require: false
+    gem "simplecov-summary", require: false, github: "inossidabile/simplecov-summary"
 end
 
 # Server
