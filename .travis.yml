@@ -1,0 +1,16 @@
+language: ruby
+# Travis consults .ruby-version etc.
+env:
+    global:
+        - RACK_ENV=test
+
+before_install:
+    - "echo 'gem: --no-ri --no-rdoc' > ~/.gemrc"
+
+install:
+    - bundle install --jobs=3 --without production development
+
+script:
+    - bundle exec rubocop --format fuubar
+    - shopt -s globstar && ruby -wc **/*.rb
+    - bundle exec cucumber
