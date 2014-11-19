@@ -12,4 +12,4 @@ install:
 script:
     - bundle exec rubocop --format fuubar
     - shopt -s globstar && ruby -wc **/*.rb
-    - bundle exec cucumber
+    - rake test_coverage

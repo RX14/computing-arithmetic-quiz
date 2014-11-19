@@ -3,11 +3,7 @@ require "codeclimate-test-reporter"
 require "simplecov-summary"
 
 SimpleCov.start do
-    formatter SimpleCov::Formatter::MultiFormatter[
-        Coveralls::SimpleCov::Formatter,
-        CodeClimate::TestReporter::Formatter,
-        SimpleCov::Formatter::SummaryFormatter
-    ]
+    formatter SimpleCov::Formatter::SummaryFormatter
 
     add_filter "/config/"
     add_filter "/features/"
