@@ -1,15 +1,15 @@
 Given /^I visit the calculator page$/ do
-  visit '/add'
+    visit "/add"
 end
 
 Given /^I fill in '(.*)' for '(.*)'$/ do |value, field|
-  fill_in(field, :with => value)
+    fill_in(field, with: value)
 end
 
 When /^I press '(.*)'$/ do |name|
-  click_button(name)
+    click_button(name)
 end
 
 Then /^I should see '(.*)'$/ do |text|
-  page.should have_content(text)
+    page.should have_content(text)
 end
