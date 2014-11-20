@@ -5,7 +5,7 @@ Feature: Test
 
   Scenario: Collect user info
     Given I visit the url "/test"
-    And I fill in "Test" for "first-name"
-    And I fill in "User" for "second-name"
+    And I fill in "Test" for "firstname"
+    And I fill in "User" for "lastname"
     When I press "Start Test"
     Then I should see "Test User"
