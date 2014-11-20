@@ -1,0 +1,14 @@
+doctype html
+html
+    head
+        = stylesheet_link_tag "application"
+        title = "Arithmetic Quiz - " + @title
+
+    body
+        h1 = @title
+
+        #content
+            == yield
+
+        #footer
+            | Project made by RX14 for the Computing GCSE "Arithmetic Quiz" task
