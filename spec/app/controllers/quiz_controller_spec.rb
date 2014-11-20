@@ -1,6 +1,6 @@
 require "spec_helper"
 
-RSpec.describe "/test" do
+RSpec.describe "/quiz" do
     # pending "add some examples to #{__FILE__}" do
     #    before do
     #        get "/test"

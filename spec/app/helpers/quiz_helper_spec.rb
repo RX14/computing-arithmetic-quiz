@@ -1,8 +1,8 @@
 require "spec_helper"
 
-RSpec.describe "ComputingArithmeticQuiz::App::TestHelper" do
+RSpec.describe "ComputingArithmeticQuiz::App::QuizHelper" do
     let(:helpers) { Class.new }
-    before { helpers.extend ComputingArithmeticQuiz::App::TestHelper }
+    before { helpers.extend ComputingArithmeticQuiz::App::QuizHelper }
     subject { helpers }
 
     # pending "add some examples to (or delete) #{__FILE__}" do

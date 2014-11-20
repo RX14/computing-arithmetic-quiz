@@ -1,10 +1,10 @@
-Feature: Test
+Feature: Quiz
   In order to test my maths skills
   As a student
   I want to be able to take an arithmetic quiz
 
   Scenario: Collect user info
-    Given I visit the url "/test"
+    Given I visit the url "/quiz"
     And I fill in "Test" for "firstname"
     And I fill in "User" for "lastname"
     When I press "Start Test"
