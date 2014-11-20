@@ -2,7 +2,7 @@
 :orm: sequel
 :test: cucumber
 :mock: none
-:script: none
+:script: jquery
 :renderer: slim
 :stylesheet: sass
 :namespace: ComputingArithmeticQuiz
