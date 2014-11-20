@@ -6,6 +6,7 @@ SimpleCov.start do
     formatter SimpleCov::Formatter::SummaryFormatter
 
     add_filter "/config/"
+    add_filter "/spec/"
     add_filter "/features/"
     add_filter "/lib/sass_initializer.rb"
 
