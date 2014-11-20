@@ -1,15 +1,18 @@
 doctype html
 html
-    head
-        = stylesheet_link_tag "application"
-        = javascript_include_tag "bootstrap", "jquery", "application"
-        title = "Arithmetic Quiz - " + @title
+  head
+    title = "Arithmetic Quiz - " + @title
 
-    body
-        h1 = @title
+    = stylesheet_link_tag "application", "bootstrap"
+    = javascript_include_tag "bootstrap", "jquery", "application"
 
-        #content
-            == yield
+    meta name="viewport" content="width=device-width, initial-scale=1"
 
-        #footer
-            | Project made by RX14 for the Computing GCSE "Arithmetic Quiz" task
+  body
+    #content
+      == yield
+
+    footer
+      .container
+        p.text-muted
+          | Project made by RX14 for the Computing GCSE "Arithmetic Quiz" task
