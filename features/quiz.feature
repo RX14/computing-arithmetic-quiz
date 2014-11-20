@@ -9,3 +9,14 @@ Feature: Quiz
     And I fill in "User" for "lastname"
     When I press "Start Test"
     Then I should see "Test User"
+
+  Scenario: Test the user
+    Given a test
+    #Then I should see 10 questions
+    Then I should see 10 input boxes
+
+  Scenario: Validate the results
+    Given a test
+    And I have filled out the test correctly
+    When I press "Submit Test"
+    Then I should see "10/10"
