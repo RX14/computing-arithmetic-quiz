@@ -1,7 +1,4 @@
 inherit_from: ../.rubocop.yml
 
-Lint/AmbiguousRegexpLiteral:
-    Enabled: false
-
 Style/Documentation:
     Enabled: false
