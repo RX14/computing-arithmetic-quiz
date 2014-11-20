@@ -7,8 +7,8 @@ gem "padrino"
 gem "rake"
 
 # Component requirements
+gem "slim"
 gem "sass"
-gem "haml"
 gem "sqlite3"
 gem "sequel"
 

@@ -3,7 +3,7 @@
 :test: cucumber
 :mock: none
 :script: none
-:renderer: haml
+:renderer: slim
 :stylesheet: sass
 :namespace: ComputingArithmeticQuiz
 :migration_format: number
