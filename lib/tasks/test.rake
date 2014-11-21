@@ -12,5 +12,11 @@ task :codeclimate do
     CodeClimate::TestReporter::Formatter.new.format(SimpleCov.result)
 end
 
+task :simplecov_report do
+    require "simplecov"
+    SimpleCov::Formatter::HTMLFormatter.new.format(SimpleCov.result)
+end
+
 task test: [:spec, :features]
 task test_coverage: [:test, "coveralls:push", :codeclimate]
+task test_report: [:test, :simplecov_report]
