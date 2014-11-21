@@ -9,6 +9,7 @@ SimpleCov.start do
     add_filter "/spec/"
     add_filter "/features/"
     add_filter "/lib/sass_initializer.rb"
+    add_filter "/lib/better_errors.rb"
 
     add_group "app:controllers", "app/controllers"
     add_group "app:helpers", "app/helpers"
