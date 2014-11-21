@@ -14,8 +14,8 @@ Then(/^I should see "(.*)"$/) do |text|
     page.should have_content(text)
 end
 
-Then(/^I should see (\d+) input boxes$/) do |amount|
+Then(/^I should see (\d+) (.*) input boxes$/) do |amount, type|
     amount = amount.to_i
-    result = all('input[type="text"]').count
-    fail("Expected #{amount} input boxes, had #{result}.") unless result == amount
+    result = all("input[type=\"#{type}\"]").count
+    fail("Expected #{amount} #{type} input boxes, had #{result}.") unless result == amount
 end

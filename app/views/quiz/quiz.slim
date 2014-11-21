@@ -5,13 +5,16 @@
   p.lead
     | Test your maths skills with this arithmetic test!
 
-/  form.form-horizontal role="form" action="/test/start" method="GET"
-/    - for 1..10
-/    .form-group
-/      label.col-sm-2.control-label for="firstname" First Name
-/      .col-sm-10
-/        input.form-control#firstname type="text" name="firstname"
-/
-/    .form-group
-/      .col-sm-10.col-sm-offset-2
-/        button.btn.btn-primary type="submit" Start Test
+  form.form-horizontal role="form" action="/quiz/finish" method="GET"
+    - @questions.each_with_index do |question, index|
+      .form-group id="question_#{index}"
+        label.col-sm-2.control-label for="question_#{index}_input" = question.to_s
+        .col-sm-10
+          input.form-control id="question_#{index}_input" type="number" name="#{question.serialize}"
+
+    input type="hidden" name="firstname" value="#{@firstname}"
+    input type="hidden" name="lastname" value="#{@lastname}"
+
+    .form-group
+      .col-sm-10.col-sm-offset-2
+        button.btn.btn-primary type="submit" Submit Test

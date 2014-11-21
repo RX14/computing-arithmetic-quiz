@@ -8,9 +8,15 @@ Given(/^a test$/) do
 end
 
 Then(/^I should see (\d+) questions$/) do |amount|
-    pending
+    (0..amount.to_i.-(1)).each do |i|
+        page.should have_selector("#question_#{i}")
+    end
 end
 
 Given(/^I have filled out the test correctly$/) do
-    pending
+    (0..9).each do |i|
+        text = find("label[for=\"question_#{i}_input\"]").text.strip
+        question = ::ComputingArithmeticQuiz::App::QuizHelper::Question.read(text)
+        find("input#question_#{i}_input").set(question.result)
+    end
 end

@@ -1,0 +1,12 @@
+.container
+  .page-header
+    h1 #{@title} (#{@name})
+
+  p.lead
+    | Test your maths skills with this arithmetic test!
+
+  | You scored #{@score}/10!
+
+  - @questions.each do |question, answer|
+      p #{question}: #{question.result == answer}: #{question.result}
+      p #{answer}
