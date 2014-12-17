@@ -14,4 +14,5 @@ script:
     - shopt -s globstar && ruby -wc **/*.rb
     - rake test_coverage
 
+sudo: false
 cache: bundler
