@@ -9,7 +9,7 @@ env:
 script:
     - bundle exec rubocop --format fuubar
     - shopt -s globstar && ruby -wc **/*.rb
-    - rake test_coverage
+    - bundle exec rake test_coverage
 
 sudo: false
 cache: bundler
