@@ -6,8 +6,8 @@ env:
         - secure: "HJRKFsO/3RYF149fYfm2OehFZbKWPZ9V/ERoFidFlk2gFhqX/XjbLdg+CROL19z4+vdXqfEhY2E4eZrshh7SQl452c7ls6anPtPz6mcIbf5VQhRPK7bz1pPPQsaAQNwSIh9dCwke1R2a/Qs05ZFHpeUQMaUQ5AHaPHs+RxaXxdI="
         - secure: "jkGMkbg3Wg9uWDb5xV4+vrLZN8slOBNwfzIkg+km7th6ueImQOFau7UrLYBtuPQiT3F3mDqNtcc3jNcTkOS+YwtiIjSfNhfg12Cb3BkIuAYIvZOQ9wvhW+9MqrEeyzRD5lNk2MA88G4/Hb7jbedbaqcd607dDFUP4IW20xBK9so="
 
-install:
-    - bundle install --jobs=3 --without production development
+#install:
+#    - bundle install --jobs=3 --without production development
 
 script:
     - bundle exec rubocop --format fuubar
