@@ -13,4 +13,4 @@ Metrics/LineLength:
 AllCops:
     Exclude:
         - "bin/computing-arithmetic-quiz"
-        - "vendor"
+        - "vendor/**/*"
