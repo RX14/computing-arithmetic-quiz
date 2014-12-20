@@ -8,3 +8,5 @@ db/*.db
 .*.sw*
 /coverage/
 /public/stylesheets/application.css*
+
+.idea/
