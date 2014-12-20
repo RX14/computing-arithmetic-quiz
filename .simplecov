@@ -8,6 +8,7 @@ SimpleCov.start do
     add_filter "/config/"
     add_filter "/spec/"
     add_filter "/features/"
+    add_filter "/vendor/"
     add_filter "/lib/sass_initializer.rb"
     add_filter "/lib/better_errors.rb"
 
