@@ -7,6 +7,7 @@ env:
         - secure: "jkGMkbg3Wg9uWDb5xV4+vrLZN8slOBNwfzIkg+km7th6ueImQOFau7UrLYBtuPQiT3F3mDqNtcc3jNcTkOS+YwtiIjSfNhfg12Cb3BkIuAYIvZOQ9wvhW+9MqrEeyzRD5lNk2MA88G4/Hb7jbedbaqcd607dDFUP4IW20xBK9so="
 
 script:
+    - rake db:migrate
     - bundle exec rubocop --format fuubar
     - shopt -s globstar && ruby -wc **/*.rb
     - bundle exec rake test_coverage
