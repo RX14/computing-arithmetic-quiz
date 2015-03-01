@@ -1,12 +1,16 @@
 .container
   .page-header
-    h1 #{@title} (#{@name})
+    h1 #{@title} (#{@quiz.student.name})
 
-  p.lead
-    | Test your maths skills with this arithmetic test!
+  h2 You scored #{@score}/10!
 
-  | You scored #{@score}/10!
-
-  - @questions.each do |question, answer|
-      p #{question}: #{question.result == answer}: #{question.result}
-      p #{answer}
+  p
+    - @questions.each do |question, answer|
+      - correct = question.result == answer
+      div class="panel #{correct ? "panel-sucess" : "panel-danger"}"
+        .panel-heading
+          h3.panel-title.row
+            div.col-md-6.text-left = question
+            div.col-md-6.text-right = correct ? "correct!" : "incorrect!"
+        .panel-body
+          = question.inspect

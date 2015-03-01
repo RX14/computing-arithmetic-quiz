@@ -1,19 +1,18 @@
 .container
   .page-header
-    h1 #{@title} (#{@student.name})
+    h1 #{@title} (#{@quiz.student.name})
 
   p.lead
     | Test your maths skills with this arithmetic test!
 
   form.form-horizontal role="form" action="/quiz/finish" method="GET"
-    - @questions.each_with_index do |question, index|
+    - @questions_map.each do |index, question|
       .form-group id="question_#{index}"
         label.col-sm-2.control-label for="question_#{index}_input" = question.to_s
         .col-sm-10
-          input.form-control id="question_#{index}_input" type="number" name="#{question.serialize}"
+          input.form-control id="question_#{index}_input" type="number" name="#{index}"
 
-    input type="hidden" name="firstname" value="#{@firstname}"
-    input type="hidden" name="lastname" value="#{@lastname}"
+    input type="hidden" name="id" value="#{@quiz.id}"
 
     .form-group
       .col-sm-10.col-sm-offset-2
