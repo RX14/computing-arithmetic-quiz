@@ -5,11 +5,15 @@ ComputingArithmeticQuiz::App.controllers :quiz do
     end
 
     get :start do
-        @firstname = params[:firstname]
-        @lastname = params[:lastname]
-        @name = @firstname + " " + @lastname
-
         @questions = ::ComputingArithmeticQuiz::App::QuizHelper::Question.get(10)
+
+        @student = Student.find_or_create firstname: params[:firstname],
+                                          lastname: params[:lastname],
+                                          class: params[:class]
+
+        @quiz = Quiz.create questions: JSON.generate(@questions), finished: false
+
+        @student.add_quiz @quiz
 
         @title = "Quiz"
         render "quiz/quiz"
