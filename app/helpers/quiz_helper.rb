@@ -47,8 +47,12 @@ module ComputingArithmeticQuiz
                     "#{left}#{operator}#{right}"
                 end
 
+                def show
+                    "#{self} = #{result}"
+                end
+
                 def inspect
-                    to_s + " = #{result}"
+                    "#<Question #{show}>"
                 end
 
                 def do_sum
