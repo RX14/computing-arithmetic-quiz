@@ -48,10 +48,11 @@ ComputingArithmeticQuiz::App.controllers :quiz do
         @quiz = Quiz[params[:id]]
 
         @questions_map = @quiz.questions
+        @answers_map = @quiz.answers
 
         @questions = Hash[
             @questions_map.map do |index, question|
-                [$Question.read(question), params[index].to_i]
+                [$Question.read(question), @answers_map[index].to_i]
             end
         ]
 
