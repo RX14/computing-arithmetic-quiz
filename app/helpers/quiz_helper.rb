@@ -43,10 +43,6 @@ module ComputingArithmeticQuiz
                     "#{left} #{operator} #{right}"
                 end
 
-                def serialize
-                    "#{left}#{operator}#{right}"
-                end
-
                 def show
                     "#{self} = #{result}"
                 end
