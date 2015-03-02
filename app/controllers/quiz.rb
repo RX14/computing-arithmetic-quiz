@@ -1,6 +1,4 @@
 ComputingArithmeticQuiz::App.controllers :quiz do
-    $Question = ::ComputingArithmeticQuiz::App::QuizHelper::Question
-
     get :index do
         @title = "Quiz"
         render "quiz/index"

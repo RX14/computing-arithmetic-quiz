@@ -91,6 +91,7 @@ module ComputingArithmeticQuiz
             end
         end
 
+        $Question = ::ComputingArithmeticQuiz::App::QuizHelper::Question
         helpers QuizHelper
     end
 end
