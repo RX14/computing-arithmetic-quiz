@@ -30,6 +30,8 @@ ComputingArithmeticQuiz::App.controllers :quiz do
             end
         ]
 
+        @quiz.finished = true
+
         @quiz.save
 
         redirect to("/quiz/results/#{@quiz.id}")
