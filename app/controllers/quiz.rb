@@ -5,11 +5,12 @@ ComputingArithmeticQuiz::App.controllers :quiz do
     end
 
     get :start do
-        @quiz = Quiz.create questions: $Question.get(10)
+        @student = Student.find_or_create firstname: params[:firstname],
+                                          lastname:  params[:lastname],
+                                          class:     params[:class]
 
-        Student.find_or_create(firstname: params[:firstname],
-                               lastname:  params[:lastname],
-                               class:     params[:class]).add_quiz(@quiz)
+        @quiz = Quiz.create questions: $Question.get(10),
+                            student: @student
 
         redirect to("/quiz/show/#{@quiz.id}")
     end
