@@ -10,7 +10,6 @@ ComputingArithmeticQuiz::App.controllers :quiz do
         @questions = $Question.get(10)
 
         @quiz = Quiz.create questions: Hash[[*@questions.map.with_index]].invert,
-                            finished: false
 
         Student.find_or_create(firstname: params[:firstname],
                                lastname:  params[:lastname],
