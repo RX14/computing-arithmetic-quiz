@@ -16,7 +16,7 @@ end
 Given(/^I have filled out the test correctly$/) do
     (0..9).each do |i|
         text = find("label[for=\"question_#{i}_input\"]").text.strip
-        question = ::ComputingArithmeticQuiz::App::QuizHelper::Question.read(text)
+        question = $Question.read(text)
         find("input#question_#{i}_input").set(question.result)
     end
 end
