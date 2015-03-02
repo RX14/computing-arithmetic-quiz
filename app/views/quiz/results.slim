@@ -6,11 +6,19 @@
 
   p
     - @quiz.q_to_a_map.each do |question, answer|
-      - correct = question.result == answer
-      div class="panel #{correct ? "panel-success" : "panel-danger"}"
-        .panel-heading
-          h3.panel-title.row
-            div.col-md-6.text-left #{question} = #{answer}
-            div.col-md-6.text-right = correct ? "correct!" : "incorrect!"
-        .panel-body
-          = question.show
+      - if question.result == answer
+        .panel.panel-success
+          .panel-heading
+            h3.panel-title.row
+              .col-md-6.text-left #{question} = #{answer}
+              .col-md-6.text-right
+                span.glyphicon.glyphicon-ok
+      - else
+        .panel.panel-danger
+          .panel-heading
+            h3.panel-title.row
+              .col-md-6.text-left #{question} = #{answer}
+              .col-md-6.text-right
+                span.glyphicon.glyphicon-remove
+          .panel-body
+            = question.show
