@@ -6,7 +6,7 @@
     | Test your maths skills with this arithmetic test!
 
   form.form-horizontal role="form" action="/quiz/finish" method="GET"
-    - @questions_map.each do |index, question|
+    - @quiz.questions.each do |index, question|
       .form-group id="question_#{index}"
         label.col-sm-2.control-label for="question_#{index}_input" = question.to_s
         .col-sm-10

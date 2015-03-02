@@ -2,15 +2,15 @@
   .page-header
     h1 #{@title} (#{@quiz.student.name})
 
-  h2 You scored #{@score}/10!
+  h2 You scored #{@quiz.score}/10!
 
   p
-    - @questions.each do |question, answer|
+    - @quiz.q_to_a_map.each do |question, answer|
       - correct = question.result == answer
       div class="panel #{correct ? "panel-sucess" : "panel-danger"}"
         .panel-heading
           h3.panel-title.row
-            div.col-md-6.text-left = question
+            div.col-md-6.text-left #{question} = #{answer}
             div.col-md-6.text-right = correct ? "correct!" : "incorrect!"
         .panel-body
           = question.inspect

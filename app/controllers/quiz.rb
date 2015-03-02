@@ -5,9 +5,7 @@ ComputingArithmeticQuiz::App.controllers :quiz do
     end
 
     get :start do
-        @questions = $Question.get(10)
-
-        @quiz = Quiz.create questions: Hash[[*@questions.map.with_index]].invert,
+        @quiz = Quiz.create questions: $Question.get(10)
 
         Student.find_or_create(firstname: params[:firstname],
                                lastname:  params[:lastname],
@@ -19,8 +17,6 @@ ComputingArithmeticQuiz::App.controllers :quiz do
     get :show, with: :id do
         @quiz = Quiz[params[:id]]
 
-        @questions_map = @quiz.questions
-
         @title = "Quiz"
         render "quiz/quiz"
     end
@@ -28,10 +24,8 @@ ComputingArithmeticQuiz::App.controllers :quiz do
     get :finish do
         @quiz = Quiz[params[:id]]
 
-        @questions_map = @quiz.questions
-
         @quiz.answers = Hash[
-            @questions_map.map do |index, _|
+            @quiz.questions.map do |index, _|
                 [index, params[index]]
             end
         ]
@@ -43,17 +37,6 @@ ComputingArithmeticQuiz::App.controllers :quiz do
 
     get :results, with: :id do
         @quiz = Quiz[params[:id]]
-
-        @questions_map = @quiz.questions
-        @answers_map = @quiz.answers
-
-        @questions = Hash[
-            @questions_map.map do |index, question|
-                [$Question.read(question), @answers_map[index].to_i]
-            end
-        ]
-
-        @score = @questions.select { |question, answer| question.result == answer }.count
 
         @title = "Results"
         render "quiz/results"
