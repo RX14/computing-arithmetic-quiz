@@ -9,7 +9,7 @@ ComputingArithmeticQuiz::App.controllers :quiz do
     get :start do
         @questions = $Question.get(10)
 
-        @quiz = Quiz.create questions: JSON.generate(Hash[[*@questions.map.with_index]].invert),
+        @quiz = Quiz.create questions: Hash[[*@questions.map.with_index]].invert,
                             finished: false
 
         Student.find_or_create(firstname: params[:firstname],
@@ -22,7 +22,7 @@ ComputingArithmeticQuiz::App.controllers :quiz do
     get :show, with: :id do
         @quiz = Quiz[params[:id]]
 
-        @questions_map = JSON.parse(@quiz.questions)
+        @questions_map = @quiz.questions
 
         @title = "Quiz"
         render "quiz/quiz"
@@ -31,9 +31,9 @@ ComputingArithmeticQuiz::App.controllers :quiz do
     get :finish do
         @quiz = Quiz[params[:id]]
 
-        @questions_map = JSON.parse(@quiz.questions)
+        @questions_map = @quiz.questions
 
-        @quiz.answers = JSON.generate Hash[
+        @quiz.answers = Hash[
             @questions_map.map do |index, _|
                 [index, params[index]]
             end
@@ -47,7 +47,7 @@ ComputingArithmeticQuiz::App.controllers :quiz do
     get :results, with: :id do
         @quiz = Quiz[params[:id]]
 
-        @questions_map = JSON.parse(@quiz.questions)
+        @questions_map = @quiz.questions
 
         @questions = Hash[
             @questions_map.map do |index, question|
