@@ -1,0 +1,27 @@
+html {
+  position: relative;
+  min-height: 100%; }
+
+body {
+  margin-bottom: 60px !important; }
+
+footer {
+  height: 60px;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background-color: #f5f5f5; }
+
+#start-again {
+    margin-bottom: 10px
+}
+
+.container {
+  width: auto;
+  max-width: 680px;
+  padding: 0 15px; }
+
+.container .text-muted {
+  margin: 20px 0; }
+
+/*# sourceMappingURL=application.css.map */
