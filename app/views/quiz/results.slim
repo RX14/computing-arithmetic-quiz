@@ -7,7 +7,7 @@
   p
     - @quiz.q_to_a_map.each do |question, answer|
       - correct = question.result == answer
-      div class="panel #{correct ? "panel-sucess" : "panel-danger"}"
+      div class="panel #{correct ? "panel-success" : "panel-danger"}"
         .panel-heading
           h3.panel-title.row
             div.col-md-6.text-left #{question} = #{answer}
