@@ -40,17 +40,9 @@ class Quiz < Sequel::Model
     end
 
     def answers=(answers)
-        case answers
-        when Hash
-            @answers = JSON.generate(answers)
+        return unless answers.is_a? Hash
+        @answers = JSON.generate(answers)
 
-        when Array
-            # Hash of Array index to Array value
-            enumerated = Hash[[*answers.map.with_index]].invert
-            @answers = JSON.generate(enumerated)
-        else
-            fail "answers was neither a Hash or an Array"
-        end
         super(@answers)
     end
 
