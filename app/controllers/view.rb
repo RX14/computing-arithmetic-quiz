@@ -1,5 +1,4 @@
 ComputingArithmeticQuiz::App.controllers :view do
-
     get :index do
         @classes = Student.select(:class).distinct.map { |s| s[:class] }
 
@@ -28,6 +27,5 @@ ComputingArithmeticQuiz::App.controllers :view do
     end
 
     get :student, with: :id do
-
     end
 end
