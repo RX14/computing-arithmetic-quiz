@@ -3,7 +3,10 @@ class Quiz < Sequel::Model
 
     def questions
         if @questions.nil?
-            json = JSON.parse(super)
+            questions_json = super
+            return if questions_json.nil?
+
+            json = JSON.parse(questions_json)
             json.each do |id, question|
                 json[id] = $Question.read(question)
             end
@@ -29,7 +32,10 @@ class Quiz < Sequel::Model
 
     def answers
         if @answers.nil?
-            json = JSON.parse(super)
+            answers_json = super
+            return if answers_json.nil?
+
+            json = JSON.parse(answers_json)
             json.each do |id, answer|
                 json[id] = answer.to_i
             end
@@ -48,6 +54,9 @@ class Quiz < Sequel::Model
 
     def q_to_a_map
         if @q_to_a_map.nil?
+            return if questions.nil?
+            return if answers.nil?
+
             @q_to_a_map = Hash[
                 questions.map do |index, question|
                     [question, answers[index]]
@@ -59,6 +68,8 @@ class Quiz < Sequel::Model
 
     def score
         if @score.nil?
+            return if q_to_a_map.nil?
+
             @score = q_to_a_map.select { |question, answer| question.result == answer }.count
         end
         @score
