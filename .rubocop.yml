@@ -1,6 +1,9 @@
 Style/IndentationWidth:
     Width: 4
 
+Style/CaseIndentation:
+    IndentOneStep: true
+
 Style/StringLiterals:
     EnforcedStyle: double_quotes
 

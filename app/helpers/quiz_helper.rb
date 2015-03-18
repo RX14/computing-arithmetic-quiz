@@ -53,14 +53,14 @@ module ComputingArithmeticQuiz
 
                 def do_sum
                     case @operator
-                    when :+
-                        @left + @right
-                    when :-
-                        @left - @right
-                    when :*
-                        @left * @right
-                    when :/
-                        @left / @right
+                        when :+
+                            @left + @right
+                        when :-
+                            @left - @right
+                        when :*
+                            @left * @right
+                        when :/
+                            @left / @right
                     end
                 end
 
@@ -72,18 +72,18 @@ module ComputingArithmeticQuiz
 
                 def self.read(string) # rubocop:disable Metrics/MethodLength
                     case
-                    when string.include?("+")
-                        val = string.split("+")
-                        op = :+
-                    when string.include?("-")
-                        val = string.split("-")
-                        op = :-
-                    when string.include?("*")
-                        val = string.split("*")
-                        op = :*
-                    when string.include?("/")
-                        val = string.split("/")
-                        op = :/
+                        when string.include?("+")
+                            val = string.split("+")
+                            op = :+
+                        when string.include?("-")
+                            val = string.split("-")
+                            op = :-
+                        when string.include?("*")
+                            val = string.split("*")
+                            op = :*
+                        when string.include?("/")
+                            val = string.split("/")
+                            op = :/
                     end
 
                     new(val[0], op, val[1])
