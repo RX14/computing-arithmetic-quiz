@@ -1,0 +1,7 @@
+.container
+  .page-header
+    h1 = @title
+
+  - @classes.each do |cls|
+    p
+      a href=url_for(:view, :class, cls, "alphabetical") = cls
