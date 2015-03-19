@@ -7,6 +7,7 @@ Feature: Quiz
     Given I visit the url "/quiz"
     And I fill in "Test" for "firstname"
     And I fill in "User" for "lastname"
+    And I fill in "Test Class" for "class"
     When I press "Start Test"
     Then I should see "Test User"
 

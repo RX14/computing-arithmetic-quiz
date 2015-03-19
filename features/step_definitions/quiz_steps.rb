@@ -3,6 +3,7 @@ Given(/^a test$/) do
         Given I visit the url "/quiz"
         And I fill in "Test" for "firstname"
         And I fill in "User" for "lastname"
+        And I fill in "Test Class" for "class"
         And I press "Start Test"
     )
 end
