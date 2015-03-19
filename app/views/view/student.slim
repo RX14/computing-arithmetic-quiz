@@ -10,7 +10,7 @@
       th Score
 
     - @student.quizzes.each do |test|
-      tr.tr-linked onclick="location.href='#{url_for(:quiz, :results, test.id)}'"
+      tr.tr-linked onclick="location.href='#{url_for(:view, :test, test.id)}'"
         td = test.id
         td = @student.name
         td = test.finished ? "yes" : "no"

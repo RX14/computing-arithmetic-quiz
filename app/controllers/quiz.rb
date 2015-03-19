@@ -56,6 +56,8 @@ ComputingArithmeticQuiz::App.controllers :quiz do
         halt 404, "This Quiz does not exist" if @quiz.nil?
         halt 400, "This Quiz has not yet been completed" unless @quiz.finished
 
+        @show_back = true
+
         @title = "Results"
         render "quiz/results"
     end

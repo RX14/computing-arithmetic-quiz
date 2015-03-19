@@ -1,3 +1,4 @@
+require "uri"
 ComputingArithmeticQuiz::App.controllers :view do
     get :index do
         @classes = Student.select(:class).distinct.map { |s| s[:class] }
@@ -40,5 +41,17 @@ ComputingArithmeticQuiz::App.controllers :view do
 
         @title = "Student: #{@student.name}"
         render "view/student"
+    end
+
+    get :test, with: :id do
+        @quiz = Quiz[params[:id]]
+
+        halt 404, "This Quiz does not exist" if @quiz.nil?
+        halt 400, "This Quiz has not yet been completed" unless @quiz.finished
+
+        @show_back = false
+
+        @title = "Results"
+        render "quiz/results"
     end
 end

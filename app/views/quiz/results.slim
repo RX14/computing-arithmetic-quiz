@@ -10,17 +10,18 @@
         .panel.panel-success
           .panel-heading
             h3.panel-title.row
-              .col-md-6.text-left #{question} = #{answer}
-              .col-md-6.text-right
+              .col-xs-11.text-left #{question} = #{answer}
+              .col-xs-1.text-right
                 span.glyphicon.glyphicon-ok
       - else
         .panel.panel-danger
           .panel-heading
             h3.panel-title.row
-              .col-md-6.text-left #{question} != #{answer}
-              .col-md-6.text-right
+              .col-xs-11.text-left #{question} != #{answer}
+              .col-xs-1.text-right
                 span.glyphicon.glyphicon-remove
           .panel-body
             = question.show
 
-  a.btn.btn-primary.pull-right#start-again href=url_for(:quiz, :index) Start Again
+  - if @show_back
+    a.btn.btn-primary.pull-right#start-again href=url_for(:quiz, :index) Start Again
