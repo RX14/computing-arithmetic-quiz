@@ -11,7 +11,11 @@ ComputingArithmeticQuiz::App.controllers :view do
     end
 
     get "/class/:class/sort/:sort" do
-        @students = Student.filter(class: params[:class]).all
+        if params[:class] == "all"
+            @students = Student.all
+        else
+            @students = Student.filter(class: params[:class]).all
+        end
 
         case params[:sort]
             when "alphabetical"

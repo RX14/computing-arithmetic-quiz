@@ -7,6 +7,7 @@
       th
         a href="alphabetical" Last Name
       th First Name
+      th Class
       th
         a href="average_score" Average Score
       th
@@ -16,6 +17,7 @@
       tr.tr-linked onclick="location.href='#{url_for(:view, :student, student.id)}'"
         td = student.lastname
         td = student.firstname
+        td = student[:class]
         td = student.average_score
         td = student.highest_score
 

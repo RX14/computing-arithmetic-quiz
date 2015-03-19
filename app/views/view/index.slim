@@ -2,6 +2,8 @@
   .page-header
     h1 = @title
 
+  p
+    a href="/view/class/all/sort/alphabetical" All Classes
   - @classes.each do |cls|
     p
       a href="/view/class/#{cls}/sort/alphabetical" = cls

@@ -8,6 +8,7 @@ ComputingArithmeticQuiz::App.controllers :quiz do
         halt 400, "First Name not given" if params[:firstname].nil?
         halt 400, "Last Name not given" if params[:lastname].nil?
         halt 400, "Class not given" if params[:class].nil?
+        halt 400, "Class `all` not allowed" if params[:class] == "all"
 
         @student = Student.find_or_create firstname: params[:firstname],
                                           lastname:  params[:lastname],
