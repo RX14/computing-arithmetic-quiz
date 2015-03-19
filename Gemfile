@@ -18,6 +18,7 @@ group "test" do
     gem "capybara"
     gem "rack-test", require: "rack/test"
     gem "cucumber"
+    gem "database_cleaner"
 
     # Linter
     gem "rubocop"

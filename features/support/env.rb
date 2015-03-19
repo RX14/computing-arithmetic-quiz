@@ -8,3 +8,10 @@ require "capybara/cucumber"
 require "rspec/expectations"
 
 Capybara.app = Padrino.application
+
+require "database_cleaner"
+require "database_cleaner/cucumber"
+
+Around do |_, block|
+    DatabaseCleaner.cleaning(&block)
+end
