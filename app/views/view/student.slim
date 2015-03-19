@@ -1,17 +1,13 @@
-.container
-  .page-header
-    h1 = @title
+table.table.table-hover
+  tr
+    th Test ID
+    th Student Name
+    th Finished
+    th Score
 
-  table.table.table-hover
-    tr
-      th Test ID
-      th Student Name
-      th Finished
-      th Score
-
-    - @student.quizzes.each do |test|
-      tr.tr-linked onclick="location.href='#{url_for(:view, :test, test.id)}'"
-        td = test.id
-        td = @student.name
-        td = test.finished ? "yes" : "no"
-        td = test.score
+  - @student.quizzes.each do |test|
+    tr.tr-linked onclick="location.href='#{url_for(:view, :test, test.id)}'"
+      td = test.id
+      td = @student.name
+      td = test.finished ? "yes" : "no"
+      td = test.score

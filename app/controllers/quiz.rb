@@ -26,7 +26,7 @@ ComputingArithmeticQuiz::App.controllers :quiz do
         halt 404, "This Quiz does not exist" if @quiz.nil?
         halt 410, "This Quiz has already been completed" if @quiz.finished
 
-        @title = "Quiz"
+        @title = "Quiz (#{@quiz.student.name})"
         render "quiz/quiz"
     end
 
@@ -58,7 +58,7 @@ ComputingArithmeticQuiz::App.controllers :quiz do
 
         @show_back = true
 
-        @title = "Results"
+        @title = "Results (#{@quiz.student.name})"
         render "quiz/results"
     end
 end

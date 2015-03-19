@@ -1,26 +1,22 @@
-.container
-  .page-header
-    h1 = @title
+p.lead
+  | Test your maths skills with this arithmetic test!
 
-  p.lead
-    | Test your maths skills with this arithmetic test!
+form.form-horizontal role="form" action="/quiz/start" method="GET"
+  .form-group
+    label.col-sm-2.control-label for="firstname" First Name
+    .col-sm-10
+      input.form-control#firstname type="text" name="firstname" required=""
 
-  form.form-horizontal role="form" action="/quiz/start" method="GET"
-    .form-group
-      label.col-sm-2.control-label for="firstname" First Name
-      .col-sm-10
-        input.form-control#firstname type="text" name="firstname" required=""
+  .form-group
+    label.col-sm-2.control-label for="lastname" Last Name
+    .col-sm-10
+      input.form-control#lastname type="text" name="lastname" required=""
 
-    .form-group
-      label.col-sm-2.control-label for="lastname" Last Name
-      .col-sm-10
-        input.form-control#lastname type="text" name="lastname" required=""
+  .form-group
+    label.col-sm-2.control-label for="class" Class
+    .col-sm-10
+      input.form-control#class type="text" name="class" required=""
 
-    .form-group
-      label.col-sm-2.control-label for="class" Class
-      .col-sm-10
-        input.form-control#class type="text" name="class" required=""
-
-    .form-group
-      .col-sm-10.col-sm-offset-2
-        button.btn.btn-primary type="submit" Start Test
+  .form-group
+    .col-sm-10.col-sm-offset-2
+      button.btn.btn-primary type="submit" Start Test

@@ -1,27 +1,23 @@
-.container
-  .page-header
-    h1 #{@title} (#{@quiz.student.name})
+h2 You scored #{@quiz.score}/10!
 
-  h2 You scored #{@quiz.score}/10!
+p
+  - @quiz.q_to_a_map.each do |question, answer|
+    - if question.result == answer
+      .panel.panel-success
+        .panel-heading
+          h3.panel-title.row
+            .col-xs-11.text-left #{question} = #{answer}
+            .col-xs-1.text-right
+              span.glyphicon.glyphicon-ok
+    - else
+      .panel.panel-danger
+        .panel-heading
+          h3.panel-title.row
+            .col-xs-11.text-left #{question} != #{answer}
+            .col-xs-1.text-right
+              span.glyphicon.glyphicon-remove
+        .panel-body
+          = question.show
 
-  p
-    - @quiz.q_to_a_map.each do |question, answer|
-      - if question.result == answer
-        .panel.panel-success
-          .panel-heading
-            h3.panel-title.row
-              .col-xs-11.text-left #{question} = #{answer}
-              .col-xs-1.text-right
-                span.glyphicon.glyphicon-ok
-      - else
-        .panel.panel-danger
-          .panel-heading
-            h3.panel-title.row
-              .col-xs-11.text-left #{question} != #{answer}
-              .col-xs-1.text-right
-                span.glyphicon.glyphicon-remove
-          .panel-body
-            = question.show
-
-  - if @show_back
-    a.btn.btn-primary.pull-right#start-again href=url_for(:quiz, :index) Start Again
+- if @show_back
+  a.btn.btn-primary.pull-right#start-again href=url_for(:quiz, :index) Start Again
