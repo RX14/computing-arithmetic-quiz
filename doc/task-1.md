@@ -10,12 +10,13 @@ produce a final score out of 10.
 Requirements
 ------------
 - Tests basic arithmetic skills:
-  - Addition, Subtraction, Multiplication etc.
+  - Addition, Subtraction, Multiplication
   - Any two numbers
     - Configurable max/min?
-  - Random questions
+  - Randomised questions
 - Info required:
   - Name
+  - Class
 - Output:
   - Answers correct?
   - Score out of 10
@@ -26,7 +27,3 @@ Design
 2. Student gets displayed a list of 10 questions with answer boxes
 3. Student answers questions
 4. Student clicks done and the answers are validated and a detailed report returned
-
-Quick notes for self
---------------------
-- HTML Input box validation
