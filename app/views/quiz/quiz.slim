@@ -10,7 +10,7 @@
       .form-group id="question_#{index}"
         label.col-sm-2.control-label for="question_#{index}_input" = question.to_s
         .col-sm-10
-          input.form-control id="question_#{index}_input" type="number" name="#{index}"
+          input.form-control id="question_#{index}_input" type="number" name="#{index}" required=""
 
     input type="hidden" name="id" value="#{@quiz.id}"
 

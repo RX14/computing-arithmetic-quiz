@@ -6,6 +6,10 @@ ComputingArithmeticQuiz::App.controllers :view do
         render "view/index"
     end
 
+    get :class, with: :class do
+        redirect to("/view/class/#{params[:class]}/sort/alphabetical")
+    end
+
     get "/class/:class/sort/:sort" do
         @students = Student.filter(class: params[:class]).all
 
@@ -28,6 +32,7 @@ ComputingArithmeticQuiz::App.controllers :view do
 
     get :student, with: :id do
         @student = Student[params[:id]]
+        halt 404, "This Student does not exist" if @student.nil?
 
         @title = "Student: #{@student.name}"
         render "view/student"

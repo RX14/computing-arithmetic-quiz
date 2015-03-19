@@ -5,6 +5,10 @@ ComputingArithmeticQuiz::App.controllers :quiz do
     end
 
     get :start do
+        halt 400, "First Name not given" if params[:firstname].nil?
+        halt 400, "Last Name not given" if params[:lastname].nil?
+        halt 400, "Class not given" if params[:class].nil?
+
         @student = Student.find_or_create firstname: params[:firstname],
                                           lastname:  params[:lastname],
                                           class:     params[:class]
@@ -32,7 +36,8 @@ ComputingArithmeticQuiz::App.controllers :quiz do
         halt 410, "This Quiz has already been completed" if @quiz.finished
 
         @quiz.answers = Hash[
-            @quiz.questions.map do |index, _|
+            @quiz.questions.map do |index, question|
+                halt 400, "Answer to #{question} not given" if params[index].nil?
                 [index, params[index]]
             end
         ]
