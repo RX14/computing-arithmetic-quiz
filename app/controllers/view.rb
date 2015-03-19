@@ -27,5 +27,9 @@ ComputingArithmeticQuiz::App.controllers :view do
     end
 
     get :student, with: :id do
+        @student = Student[params[:id]]
+
+        @title = "Student: #{@student.name}"
+        render "view/student"
     end
 end
