@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Arithmetic Quiz - Writeup</title>
+    <link href="https://cdn.rawgit.com/sindresorhus/github-markdown-css/4cac7ec8c60d942e3bbc5327a397557ac4b3cda3/github-markdown.css" rel="stylesheet" />
+    <link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/styles/tomorrow-night-bright.min.css" rel="stylesheet" />
+    <script src="highlight.pack.js"></script>
+    <script>
+      hljs.initHighlightingOnLoad();
+    </script>
+    <style type="text/css">
+      /* Table stuff */
+      table, th, td {
+        border-top: 1px solid black;
+        border-bottom: 1px solid black;
+      }
+      
+      table {
+        table-layout: fixed;
+        width: calc(100% + 16px);
+        margin-left: -8px;
+        margin-right: -8px;
+        border-collapse: collapse;
+      }
+      
+      tr > td {
+        width: 50%;
+      }
+      
+      tr > td:nth-of-type(1) {
+        padding: 15px;
+      }
+      
+      tr > td:nth-of-type(2) {
+        background: black;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="markdown-body"><h1>Arithmetic Quiz - Writeup</h1>
+
+<h2>Task 1</h2>
+
+<blockquote>
+<p>A primary school teacher wants a computer program to test the basic arithmetic skills of her students.
+The program should generate a quiz consisting of a series of random questions, using in each case any two
+numbers and addition, subtraction and multiplication. The system should ask the student&#39;s name, then ask 10
+questions, output if the answer to each question is correct or not and produce a final score out of 10.</p>
+</blockquote>
+
+<h3>Success Criteria:</h3>
+
+<ul>
+<li>It must be able to generate a quiz containing 10 questions. In order to properly test the students in
+consecutive quizzes, the program should generate random questions instead of using a reset 10 questions every
+time.</li>
+<li>The system must be able to ask the students name.</li>
+<li>It must then show these questions to the student in a human-readable format so that the students can
+understand what the program is asking them to solve.</li>
+<li>The student should be able to enter an answer to the question.</li>
+<li>The program should store the answers given so that a score can be given at the end of the quiz.</li>
+</ul>
+
+<p>After I have written the code I will test that the program performs as expected against these success criteria.</p>
+
+<h3>Design</h3>
+
+<p>I have made a flow chart to show the high level structure of the program I will be writing.
+<img src="flowchart1.png" height="1000" style="display: block; margin-left: auto; margin-right: auto" /></p>
+
+<p>Alternately, I could have made the program ask a question then ask an answer, but I believe this solution to be
+better suited to the medium which I have chosen to deliver this program on: the web.</p>
+
+<h3>Implementation</h3>
+
+<p>I have chosen to write this program as a web application instead of a commandline application for several
+reasons:</p>
+
+<ul>
+<li>It is easier for the students to access the program.</li>
+<li>It is possible for multiple students to use the program at the same time.</li>
+<li>I want to challenge myself.</li>
+</ul>
+
+<p>Web pages are served in a language called HTML which describes the content of the page and how to display it.
+HTML however is not a programming language because while it does provide a way of collecting user input, it
+does not provide any way of using logic. Because of this limitation, I will have to write a program which
+generates HTML and receives the user input from HTML.</p>
+
+<p>I have chosen to write the program which generated the HTML in a programming language called ruby because I am
+familiar with the language from previous projects and it has many tools already available for helping generate
+and server webpages.</p>
+
+<p>In particular I will be using a web framework called &quot;padrino&quot; to help me write the web application. The padrino
+framework allows me to write in terms of models, views and controllers.</p>
+
+<ul>
+<li>Models represent the core data format of an application, in our case &#39;quiz&#39; and &#39;student&#39;.</li>
+<li>Views take the data stored in a model and display it to the student.</li>
+<li>Models take requests from the user and perform alterations to the model.</li>
+</ul>
+
+<p>Before I show you my code, I need to make some basic explanations about some of the non-obvious rules and syntax
+of the ruby programming language:</p>
+
+<ul>
+<li>Sections starting with <code>do</code> and finishing with <code>end</code> or using curly braces are blocks. They specify their
+arguments like functions but use the syntax <code>|arg1, arg2|</code>
+<pre><code class="nohighlight">[ &quot;one&quot;, &quot;two&quot; ].each do |element|
+  puts element # Puts is ruby&#39;s &quot;print&quot; statement
+end
+</code></pre>
+This would produce the output
+<pre><code class="nohighlight">one
+two
+</code></pre></li>
+<li>Functions can have the parenteses around the arguments left off where
+<pre><code class="nohighlight">function(arg1, arg2)</code></pre>
+is the same as
+<pre><code class="nohighlight">function arg1, arg2</code></pre></li>
+<li>The last line of a function is the return value.
+<pre><code class="nohighlight">def name
+  return firstname + &quot; &quot; + lastname
+end
+</code></pre>
+is the same as
+<pre><code class="nohighlight">def name
+  firstname + &quot; &quot; + lastname
+end
+</code></pre></li>
+</ul>
+
+<p>I will show you my code on the right with brief explanations on the left.</p>
+
+<h2>Models</h2>
+
+<h3>Student</h3>
+
+    </div>
+    <table>
+      <tr>
+        <td class="markdown-body">
+          <p>We are creating a model.</p>
+          
+        </td>
+        <td>
+          <pre><code class="ruby">class Student < Sequel::Model</code></pre>
+        </td>
+      </tr>
+      <tr>
+        <td class="markdown-body"><p>There is one student to many quizzes. This is a helper that defines things such as <code>student.quizzes</code> and
+<code>student.add_quiz</code></p>
+
+        </td>
+        <td>
+          <pre><code class="ruby">    one_to_many :quizzes</code></pre>
+        </td>
+      </tr>
+      <tr>
+        <td class="markdown-body">
+          <p>The student&#39;s name is their firstname and lastname concatenated with a space.</p>
+          
+        </td>
+        <td>
+          <pre><code class="ruby">    def name
+        firstname + " " + lastname
+    end</code></pre>
+        </td>
+      </tr>
+      <tr>
+        <td class="markdown-body">
+          <p>Returns an array of the quizzes which are finished.</p>
+          
+        </td>
+        <td>
+          <pre><code class="ruby">    def completed_quizzes
+        quizzes.select(&:finished)
+    end</code></pre>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <div class="markdown-body"><p>Finds the student&#39;s average score. Uses only completed quizzes because non-completed quizzes have no score.
+Reduce is a function which iterates through every completed quiz, setting <code>e</code> to the current element and <code>a</code>
+(accumulator) to the value returned from the previous element. The <code>0.0</code> specifies the first value for the
+accumulator. The last line is basically a shortened version of this code:</p>
+
+          </div>
+          <pre><code class="ruby">accumulator = 0.0
+completed_quizzes.each do |quiz|
+    accumulator = accumulator + quiz.score.to_i
+end
+return accumulator / quizzes.size</code></pre>
+          <div class="markdown-body">
+            <p>This adds all the scores together and divides them by the number of quizzes which we all know is how we
+            get an average!</p>
+            
+          </div>
+        </td>
+        <td>
+          <pre><code class="ruby">    def average_score
+        return if completed_quizzes.empty?
+
+        completed_quizzes.reduce(0.0) { |a, e| a + e.score.to_i } / quizzes.size
+    end</code></pre>
+        </td>
+      </tr>
+      <tr>
+        <td class="markdown-body">
+          <p>Takes the completed quiz with the highest score and gets it&#39;s score.</p>
+          
+        </td>
+        <td>
+          <pre><code class="ruby">    def highest_score
+        return if completed_quizzes.empty?
+
+        completed_quizzes.max_by(&:score).score
+    end</code></pre>
+        </td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>
+          <pre><code class="ruby">end</code></pre>
+        </td>
+      </tr>
+    </table>
+    <h2>
+      Templates
+    </h2>
+    <table width="100%">
+      <tr>
+        <td></td>
+        <td>
+          <pre><code class="slim">doctype html
+html
+  head
+    title = "Arithmetic Quiz - " + @title
+
+    = stylesheet_link_tag "application", "bootstrap"
+    = javascript_include_tag "jquery", "bootstrap", "application"
+
+    meta name="viewport" content="width=device-width, initial-scale=1"
+
+  body
+    #content
+      .container
+        .page-header
+          h1 = @title
+        == yield
+
+    footer
+      .container
+        p.text-muted.text-center
+          | Project made by RX14 for the Computing GCSE "Arithmetic Quiz" task</code></pre>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
