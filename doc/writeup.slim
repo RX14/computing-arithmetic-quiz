@@ -120,7 +120,7 @@ html
           end
           </code></pre>
 
-        I will show you my code on the right with brief explanations on the left.
+        I also want to note that tasks 1 and 2 were implemented at the same time so the code is for **both** tasks.
 
         Models
         ---------------------
@@ -129,7 +129,7 @@ html
       tr
         td.markdown-body
           markdown:
-            We are creating a model.
+            Creates a sequel model called `Student`. Sequel is the library that adds models.
         td
           pre
             code class="ruby"
@@ -146,7 +146,7 @@ html
       tr
         td.markdown-body
           markdown:
-            The student's name is their firstname and lastname concatenated with a space.
+            The student's name is their `firstname` and `lastname` concatenated with a space.
 
         td
           pre
@@ -172,7 +172,7 @@ html
               Finds the student's average score. Uses only completed quizzes because non-completed quizzes have no score.
               Reduce is a function which iterates through every completed quiz, setting `e` to the current element and `a`
               (accumulator) to the value returned from the previous element. The `0.0` specifies the first value for the
-              accumulator. The last line is basically a shortened version of this code:
+              accumulator. The last line is essentially a shortened version of this code:
           pre
             code class="ruby"
               | accumulator = 0.0
@@ -182,7 +182,7 @@ html
                 return accumulator / quizzes.size
           .markdown-body
             markdown:
-              This adds all the scores together and divides them by the number of quizzes which we all know is how we
+              This code adds all the scores together and divides them by the number of quizzes which we all know is how we
               get an average!
         td
           pre
@@ -195,7 +195,7 @@ html
       tr
         td.markdown-body
           markdown:
-            Takes the completed quiz with the highest score and gets it's score.
+            Takes the completed quiz with the highest `score` value and gets it's score.
         td
           pre
             code class="ruby"
@@ -210,7 +210,174 @@ html
           pre
             code class="ruby"
               | end
+    p
+    .markdown-body
+      markdown: ### Quiz
+    table
+      tr
+        td.markdown-body
+          markdown:
+            Loads the `json` library. JSON is a data format for saving and loading arrays, hashes and other data from
+            strings. I use it for saving questions in the DB.
+        td
+          pre
+            code class="ruby"
+              | require "json"
+      tr
+        td.markdown-body
+          markdown:
+            Quiz model, same as before.
+        td
+          pre
+            code class="ruby"
+              | class Quiz < Sequel::Model
+      tr
+        td.markdown-body
+          markdown:
+            Like `one_to_many` from `Student` but adds methods such as `quiz.student`.
+        td
+          pre
+            code class="ruby"
+              |     many_to_one :student
+      tr
+        td.markdown-body
+          markdown:
+            This method is for retrieving the list of questions in this quiz. It overrides a default `question` method
+            which would just return the raw data.
 
+             The data is stored as a JSON hash with a key from 0 to 9 identifying the question, and a string in the
+             format `8+5` which is the question.
+
+            `@questions` is used as a cache variable so that it only has to query the database once per call. `super` is
+            a special method which calls the default questions method to get the raw data in JSON format. It then checks
+            if the raw data is empty, before using the JSON library to decode the data into a ruby hash of number to
+            string. It then iterates through the array converting the strings to `Question` objects. It then sets the
+            `@question` variable so the decoding will be skipped and the cached value will be returned.
+        td
+          pre
+            code class="ruby"
+              |     def questions
+                        if @questions.nil?
+                            questions_json = super
+                            return if questions_json.nil?
+
+                            json = JSON.parse(questions_json)
+                            json.each do |id, question|
+                                json[id] = $Question.read(question)
+                            end
+
+                            @questions = json
+                        end
+                        @questions
+                    end
+      tr
+        td.markdown-body
+          markdown:
+            This method sets the list of questions for this quiz. It essentially does the opposite of the previous
+            statement. The method can either accept a `Hash` in the format described previously or an array where the
+            numerical IDs are inserted automatically. It then sets the `@questions` cache variable to make `questions`
+            return the right value and then uses `super` like in the last example to save the data to the DB.
+        td
+          pre
+            code class="ruby"
+              |     def questions=(questions)
+                        case questions
+                            when Hash
+                                @questions = JSON.generate(questions)
+                            when Array
+                                # Hash of Array index to Array value
+                                enumerated = Hash[[*questions.map.with_index]].invert
+                                @questions = JSON.generate(enumerated)
+                            else
+                                fail "questions was neither a Hash or an Array"
+                        end
+                        super(@questions)
+                    end
+      tr
+        td.markdown-body
+          markdown:
+            This is almost exactly the same as the first `questions` method except it is a map of the ID of the question
+            to the answer given by the student. Another difference is that instead of turning the strings into Question
+            object it uses `to_i` to ensure that the answers are numbers.
+        td
+          pre
+            code class="ruby"
+              |     def answers
+                        if @answers.nil?
+                            answers_json = super
+                            return if answers_json.nil?
+
+                            json = JSON.parse(answers_json)
+                            json.each do |id, answer|
+                                json[id] = answer.to_i
+                            end
+
+                            @answers = json
+                        end
+                        @answers
+                    end
+      tr
+        td.markdown-body
+          markdown:
+            Sets the list of answers for this quiz. This method simply converts the ruby hash given directly into JSON
+            unlike previous examples.
+        td
+          pre
+            code class="ruby"
+              |     def answers=(answers)
+                        return unless answers.is_a? Hash
+                        @answers = JSON.generate(answers)
+
+                        super(@answers)
+                    end
+      tr
+        td.markdown-body
+          markdown:
+            This method returns a map of questions to answers. It checks to see if either the questions or answers are
+            present first, then creates an array of arrays using the `map` function. The `map` function is like `each`
+            but it creates a list using the return values of the block. Since the block used in the `map` function
+            returns a list then you end up with a list of lists, which can be used to construct a hash.
+        td
+          pre
+            code class="ruby"
+              |     def q_to_a_map
+                        if @q_to_a_map.nil?
+                            return if questions.nil?
+                            return if answers.nil?
+
+                            @q_to_a_map = Hash[
+                                questions.map do |index, question|
+                                    [question, answers[index]]
+                                end
+                            ]
+                        end
+                        @q_to_a_map
+                    end
+      tr
+        td.markdown-body
+          markdown:
+            This method gets the score for the quiz. It uses the `q_to_a_map` and selects only question <> answer pairs
+            where the question's result is the same as the student's answer. It then counts these to get the score.
+        td
+          pre
+            code class="ruby"
+              |     def score
+                        if @score.nil?
+                            return if q_to_a_map.nil?
+
+                            @score = q_to_a_map.select { |question, answer| question.result == answer }.count
+                        end
+                        @score
+                    end
+      tr
+        td
+        td
+          pre
+            code class="ruby"
+              | end
+
+
+    /------------------
     h2 Templates
     table width="100%"
       tr
