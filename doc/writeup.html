@@ -97,7 +97,7 @@ framework allows me to write in terms of models, views and controllers.</p>
 <ul>
 <li>Models represent the core data format of an application, in our case &#39;quiz&#39; and &#39;student&#39;.</li>
 <li>Views take the data stored in a model and display it to the student.</li>
-<li>Models take requests from the user and perform alterations to the model.</li>
+<li>Controllers take requests from the user and perform alterations to the model.</li>
 </ul>
 
 <p>Before I show you my code, I need to make some basic explanations about some of the non-obvious rules and syntax
@@ -134,8 +134,210 @@ end
 
 <h2>Models</h2>
 
-<h3>Student</h3>
+<h3>Question</h3>
 
+    </div>
+    <table>
+      <tr>
+        <td class="markdown-body"><p>This model isn&#39;t saved in the database therefore it&#39;s a simple class instead of the next two models, which
+extend <code>Sequel::Model</code>.</p>
+
+        </td>
+        <td>
+          <pre><code class="ruby">class Question</code></pre>
+        </td>
+      </tr>
+      <tr>
+        <td class="markdown-body"><p>This is a special method that processes creating a new object, you create new Questions using <code>Question.new</code>
+which calls the <code>initialise</code> method. I wanted to be able to initialise a question using a random value using
+<code>Question.new(min: 1, max: 10, operators: [&quot;*&quot;, &quot;-&quot;, &quot;+&quot;])</code> or using an existing value with
+<code>Question.new(1, &quot;+&quot;, 2)</code>. In the first case arg1 would be a hash of options. It then calls <code>init_rand</code> with
+these options. If arg1 isn&#39;t a hash we use <code>init_pre</code> to try and initialise it using the given values.</p>
+
+        </td>
+        <td>
+          <pre><code class="ruby">    def initialize(arg1, arg2 = nil, arg3 = nil)
+        if arg1.class == Hash
+            init_rand(arg1)
+        else
+            init_pre(arg1, arg2, arg3)
+        end
+    end</code></pre>
+        </td>
+      </tr>
+      <tr>
+        <td class="markdown-body"><p>This method initialises the question from the given options. First it merges the given options with the
+defaults, then it uses the <code>rand_from_options</code> method twice to select a random number for the left and right
+sides using the minimum and maximums specified in the options. It then takes a random sample from the
+available operators. After that it uses to <code>do_sum</code> method to generate the answer from the left side,
+operator and right side.</p>
+
+        </td>
+        <td>
+          <pre><code class="ruby">    def init_rand(options = {})
+        @options = { min: 1, max: 10, operators: [:*, :+, :-] }.merge options
+
+        @left = rand_from_options
+        @operator = @options[:operators].sample
+        @right = rand_from_options
+
+        @result = do_sum
+    end</code></pre>
+        </td>
+      </tr>
+      <tr>
+        <td class="markdown-body">
+          <p>Initialises the question using the predefined options given. Makes sure that the left and right sides are
+          integer and that the operator is a symbol. Symbols are like strings but are used sometimes for performance
+          reasons.</p>
+          
+        </td>
+        <td>
+          <pre><code class="ruby">    def init_pre(left, operator, right)
+        @left = left.to_i
+        @operator = operator.to_sym
+        @right = right.to_i
+        @result = do_sum
+    end</code></pre>
+        </td>
+      </tr>
+      <tr>
+        <td class="markdown-body"><p><code>attr_reader</code> is a helper method from ruby which allows read-only access to a class variable. In this case I
+am allowing access to the <code>@left</code>, <code>@operator</code> <code>@right</code>, <code>@result</code> and <code>@options</code> variables.</p>
+
+        </td>
+        <td>
+          <pre><code class="ruby">    attr_reader :left
+    attr_reader :operator
+    attr_reader :right
+    attr_reader :result
+    attr_reader :options</code></pre>
+        </td>
+      </tr>
+      <tr>
+        <td class="markdown-body"><p>Calls ruby&#39;s <code>rand</code> method with a range (syntax <code>0..5</code> for a rage from 0 to 5 inclusive) to return a random
+number using the minimum and maximum values in the options.</p>
+
+        </td>
+        <td>
+          <pre><code class="ruby">    def rand_from_options
+        rand(@options[:min]..@options[:max])
+    end</code></pre>
+        </td>
+      </tr>
+      <tr>
+        <td class="markdown-body"><p>Defines the conversion of a question into a string, which is in the format <code>1 + 3</code>. The <code>#{ ... }</code> syntax
+inside a quoted string is string interpolation where ruby substitutes the result of the code inside the
+brackets into the string.</p>
+
+        </td>
+        <td>
+          <pre><code class="ruby">    def to_s
+        "#{left} #{operator} #{right}"
+    end</code></pre>
+        </td>
+      </tr>
+      <tr>
+        <td class="markdown-body"><p>The <code>show</code> method is like <code>to_s</code> but shows the correct answer too.</p>
+
+        </td>
+        <td>
+          <pre><code class="ruby">    def show
+        "#{to_s} = #{result}"
+    end</code></pre>
+        </td>
+      </tr>
+      <tr>
+        <td class="markdown-body"><p>Inspect method used for debugging. Like <code>show</code> but clearly shows that this is a <code>Question</code> object, not a
+string. Used for debugging.</p>
+
+        </td>
+        <td>
+          <pre><code class="ruby">    def inspect
+        "#&lt;Question #{show}>"
+    end</code></pre>
+        </td>
+      </tr>
+      <tr>
+        <td class="markdown-body"><p>Returns the correct answer for the question based on the <code>left</code> <code>right</code> and <code>operator</code> fields. It uses a
+case statement to select the sum to perform based on the operator.</p>
+
+<p>The method is marked as <code>private</code> meaning that it can only be used inside the class.</p>
+
+        </td>
+        <td>
+          <pre><code class="ruby">    def do_sum
+        case @operator
+            when :+
+                @left + @right
+            when :-
+                @left - @right
+            when :*
+                @left * @right
+            when :/
+                @left / @right
+        end
+    end
+
+    private :do_sum</code></pre>
+        </td>
+      </tr>
+      <tr>
+        <td class="markdown-body"><p>Creates the specified number of questions with the given options. The method is defined as <code>self.get</code>
+because the method is called on the class, not the instance. This means that you do not need to call <code>new</code>
+before using this method.</p>
+
+<p>First it creates a range from 1 to the amount specified, then uses <code>collect</code> to collect a new question -
+based on the options given - for each number in the range.</p>
+
+        </td>
+        <td>
+          <pre><code class="ruby">    def self.get(amount, options = {})
+        (1..amount).collect { new(options) }
+    end</code></pre>
+        </td>
+      </tr>
+      <tr>
+        <td class="markdown-body"><p>Another class method used to create a <code>Question</code> instance from a string.</p>
+
+<p>It first uses a case statement to decide what to do depending on if one of the operators is in the string
+given. It then splits the string into what is on either side of the operator, and assigns it to <code>val</code>. It
+also sets the <code>op</code> variable to the symbol of the operator. It then calls the constructor using the left side
+of the split, the operator and the right side of the split.</p>
+
+        </td>
+        <td>
+          <pre><code class="ruby">    def self.read(string)
+        case
+            when string.include?("+")
+                val = string.split("+")
+                op = :+
+            when string.include?("-")
+                val = string.split("-")
+                op = :-
+            when string.include?("*")
+                val = string.split("*")
+                op = :*
+            when string.include?("/")
+                val = string.split("/")
+                op = :/
+        end
+
+        new(val[0], op, val[1])
+    end</code></pre>
+        </td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>
+          <pre><code class="ruby">end</code></pre>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <div class="markdown-body">
+      <h3>Student</h3>
+      
     </div>
     <table>
       <tr>
@@ -264,8 +466,9 @@ which would just return the raw data.</p>
 <p><code>@questions</code> is used as a cache variable so that it only has to query the database once per call. <code>super</code> is
 a special method which calls the default questions method to get the raw data in JSON format. It then checks
 if the raw data is empty, before using the JSON library to decode the data into a ruby hash of number to
-string. It then iterates through the array converting the strings to <code>Question</code> objects. It then sets the
-<code>@question</code> variable so the decoding will be skipped and the cached value will be returned.</p>
+string. It then iterates through the array converting the strings to the <code>Question</code> object we saw
+previously. It then sets the <code>@question</code> variable so the decoding will be skipped and the cached value will
+be returned.</p>
 
         </td>
         <td>
@@ -350,7 +553,9 @@ object it uses <code>to_i</code> to ensure that the answers are numbers.</p>
         <td class="markdown-body"><p>This method returns a map of questions to answers. It checks to see if either the questions or answers are
 present first, then creates an array of arrays using the <code>map</code> function. The <code>map</code> function is like <code>each</code>
 but it creates a list using the return values of the block. Since the block used in the <code>map</code> function
-returns a list then you end up with a list of lists, which can be used to construct a hash.</p>
+returns a list with two elements, you end up with a list of lists, which can be used to construct a Hash.
+For example the array of arrays<code>[[&quot;key1&quot;, &quot;value1&quot;], [&quot;key2&quot;, &quot;value2]]</code> would be converted to the hash
+<code>{ &quot;key1&quot; =&gt; &quot;value1&quot;, &quot;key2&quot; =&gt; &quot;value2&quot; }</code></p>
 
         </td>
         <td>
@@ -371,7 +576,7 @@ returns a list then you end up with a list of lists, which can be used to constr
       </tr>
       <tr>
         <td class="markdown-body"><p>This method gets the score for the quiz. It uses the <code>q_to_a_map</code> and selects only question &lt;&gt; answer pairs
-where the question&#39;s result is the same as the student&#39;s answer. It then counts these to get the score.</p>
+where the question&#39;s result is the same as the student&#39;s answer. It then counts the pairs to get the score.</p>
 
         </td>
         <td>
@@ -387,6 +592,262 @@ where the question&#39;s result is the same as the student&#39;s answer. It then
       </tr>
       <tr>
         <td></td>
+        <td>
+          <pre><code class="ruby">end</code></pre>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <div class="markdown-body"><h2>Controllers</h2>
+
+<p>Controllers are the part of the application that receive HTTP requests from the user and edit the models
+accordingly. Each controller has a namespace such as <code>:quiz</code> which means that that controller takes requests
+under the path of <code>/quiz/</code>.</p>
+
+<h3>Quiz</h3>
+
+    </div>
+    <table>
+      <tr>
+        <td class="markdown-body"><p>Defines a new controller on the <code>ComputingArithmeticQuiz</code> app. The controller responds to requests to the
+<code>/quiz/</code> path.</p>
+
+        </td>
+        <td>
+          <pre><code class="ruby">ComputingArithmeticQuiz::App.controllers :quiz do</code></pre>
+        </td>
+      </tr>
+      <tr>
+        <td class="markdown-body"><p>Defines what happens when you perform a HTTP <code>GET</code> request (the type of request performed by web browsers)
+to the index page (just <code>/quiz/</code>). It sets the page title to &#39;Quiz&#39; then renders the <code>quiz/index</code> view.</p>
+
+        </td>
+        <td>
+          <pre><code class="ruby">    get :index do
+        @title = "Quiz"
+        render "quiz/index"
+    end</code></pre>
+        </td>
+      </tr>
+      <tr>
+        <td class="markdown-body"><p>Once the user has filled out the HTML form on the index view, the browser sends the information to the
+<code>/quiz/start</code> URL which is handled by this method.</p>
+
+<p>First, it checks to see if the <code>firstname</code>, <code>lastname</code> or <code>class</code> parameters from the form submission are
+blank. If they are then it returns a <code>HTTP 400 Bad Request</code> error with an explanation. It also fails if the
+class name is <code>all</code> because that name is used later on to represent a view of all classes.</p>
+
+<p>Next, it uses the <code>Student.find_or_create</code> method to find a student with the given first name, last name
+and class, or create one of a matching student does not exist. It then creates a quiz with the student found
+and a list of 10 questions from the <code>Question.get()</code> method I explained before.</p>
+
+<p>Finally, it redirects the client to the show method with the given quiz id. This is so that it doesn&#39;t
+generate a new quiz every time a student refreshes their page.</p>
+
+        </td>
+        <td>
+          <pre><code class="ruby">    get :start do
+        halt 400, "First Name not given" if params[:firstname].blank?
+        halt 400, "Last Name not given" if params[:lastname].blank?
+        halt 400, "Class not given" if params[:class].blank?
+        halt 400, "Class `all` not allowed" if params[:class] == "all"
+
+        @student = Student.find_or_create firstname: params[:firstname],
+                                          lastname:  params[:lastname],
+                                          class:     params[:class]
+
+        @quiz = Quiz.create questions: $Question.get(10),
+                            student: @student
+
+        redirect to("/quiz/show/#{@quiz.id}")
+    end</code></pre>
+        </td>
+      </tr>
+      <tr>
+        <td class="markdown-body">
+          <p>This method takes a parameter of a quiz id and shows the input page with the questions for students to fill
+          out. First, it gets the quiz object with the given id. After that it checks that there was a quiz found and
+          that the quiz isn&#39;t finished. It the sets the title and renders the quiz page.</p>
+          
+        </td>
+        <td>
+          <pre><code class="ruby">    get :show, with: :id do
+        @quiz = Quiz[params[:id]]
+
+        halt 404, "This Quiz does not exist" if @quiz.nil?
+        halt 410, "This Quiz has already been completed" if @quiz.finished
+
+        @title = "Quiz (#{@quiz.student.name})"
+        render "quiz/quiz"
+    end</code></pre>
+        </td>
+      </tr>
+      <tr>
+        <td class="markdown-body">
+          <p>This get method processes the results from the quiz.</p>
+          
+          <p>First, it gets the quiz object and does basic input validation like the previous method. Next, it reads the
+          parameters and generates the answers hash. It does this by iterating through the list of questions, then
+          finding the answer returned from the form with the same index as the question. If this answer is not found
+          it throws an error. After setting the answers hash, it sets the quiz as finished and saves the changes. It
+          then redirects the client to the results page for the quiz id, which shows them their results.</p>
+          
+        </td>
+        <td>
+          <pre><code class="ruby">    get :finish do
+        @quiz = Quiz[params[:id]]
+
+        halt 404, "This Quiz does not exist" if @quiz.nil?
+        halt 410, "This Quiz has already been completed" if @quiz.finished
+
+        @quiz.answers = Hash[
+            @quiz.questions.map do |index, question|
+                halt 400, "Answer to #{question} not given" if params[index].blank?
+                [index, params[index]]
+            end
+        ]
+
+        @quiz.finished = true
+
+        @quiz.save
+
+        redirect to("/quiz/results/#{@quiz.id}")
+    end</code></pre>
+        </td>
+      </tr>
+      <tr>
+        <td class="markdown-body"><p>This method shows the final results page of the quiz with the score and a review of which questions the user
+got right and wrong.</p>
+
+<p>This method starts off much the same as the previous two methods, except that it checks that the quiz is
+finished instead of <em>not</em> finished. It then sets <code>@show_back</code> which is a variable used to configure the
+<code>quiz/results</code> view, because the same view is used in two places.</p>
+
+        </td>
+        <td>
+          <pre><code class="ruby">    get :results, with: :id do
+        @quiz = Quiz[params[:id]]
+
+        halt 404, "This Quiz does not exist" if @quiz.nil?
+        halt 400, "This Quiz has not yet been completed" unless @quiz.finished
+
+        @show_back = true
+
+        @title = "Results (#{@quiz.student.name})"
+        render "quiz/results"
+    end</code></pre>
+        </td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>
+          <pre><code class="ruby">end</code></pre>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <div class="markdown-body">
+      <h3>View</h3>
+      
+    </div>
+    <table>
+      <tr>
+        <td class="markdown-body">
+          
+        </td>
+        <td>
+          <pre><code class="ruby">ComputingArithmeticQuiz::App.controllers :view do</code></pre>
+        </td>
+      </tr>
+      <tr>
+        <td class="markdown-body">
+          
+        </td>
+        <td>
+          <pre><code class="ruby">    get :index do
+        @classes = Student.select(:class).distinct.map { |s| s[:class] }
+
+        @title = "Classes"
+        render "view/index"
+    end</code></pre>
+        </td>
+      </tr>
+      <tr>
+        <td class="markdown-body">
+          
+        </td>
+        <td>
+          <pre><code class="ruby">    get :class, with: :class do
+        redirect to("/view/class/#{params[:class]}/sort/alphabetical")
+    end</code></pre>
+        </td>
+      </tr>
+      <tr>
+        <td class="markdown-body">
+          
+        </td>
+        <td>
+          <pre><code class="ruby">    get "/class/:class/sort/:sort" do
+        if params[:class] == "all"
+            @students = Student.all
+        else
+            @students = Student.filter(class: params[:class]).all
+        end
+
+        case params[:sort]
+            when "alphabetical"
+                @students.sort_by!(&:lastname)
+            when "highest_score"
+                @students.sort_by! { |s| s.highest_score.to_f }
+                @students.reverse!
+            when "average_score"
+                @students.sort_by! { |s| s.average_score.to_f }
+                @students.reverse!
+            else
+                pass
+        end
+
+        @title = "Class: #{params[:class]}"
+        render "view/class"
+    end</code></pre>
+        </td>
+      </tr>
+      <tr>
+        <td class="markdown-body">
+          
+        </td>
+        <td>
+          <pre><code class="ruby">    get :student, with: :id do
+        @student = Student[params[:id]]
+        halt 404, "This Student does not exist" if @student.nil?
+
+        @title = "Student: #{@student.name}"
+        render "view/student"
+    end</code></pre>
+        </td>
+      </tr>
+      <tr>
+        <td class="markdown-body">
+          
+        </td>
+        <td>
+          <pre><code class="ruby">    get :test, with: :id do
+        @quiz = Quiz[params[:id]]
+
+        halt 404, "This Quiz does not exist" if @quiz.nil?
+        halt 400, "This Quiz has not yet been completed" unless @quiz.finished
+
+        @show_back = false
+
+        @title = "Results"
+        render "quiz/results"
+    end</code></pre>
+        </td>
+      </tr>
+      <tr>
+        <td class="markdown-body">
+          
+        </td>
         <td>
           <pre><code class="ruby">end</code></pre>
         </td>
