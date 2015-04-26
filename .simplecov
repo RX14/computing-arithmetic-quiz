@@ -15,4 +15,5 @@ SimpleCov.start do
     add_group "app:controllers", "app/controllers"
     add_group "app:helpers", "app/helpers"
     add_group "app:app", "app/app.rb"
+    add_group "app:models", "models"
 end
