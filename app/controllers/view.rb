@@ -20,7 +20,7 @@ ComputingArithmeticQuiz::App.controllers :view do
 
         case params[:sort]
             when "alphabetical"
-                @students.sort_by!(&:lastname)
+                @students.sort_by! { |s| s.lastname.downcase }
             when "highest_score"
                 @students.sort_by! { |s| s.highest_score.to_f }
                 @students.reverse!
@@ -51,7 +51,7 @@ ComputingArithmeticQuiz::App.controllers :view do
 
         @show_back = false
 
-        @title = "Results"
+        @title = "Results (#{@quiz.student.name})"
         render "quiz/results"
     end
 end
