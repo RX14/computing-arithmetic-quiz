@@ -3,11 +3,13 @@ html
   head
     title Arithmetic Quiz - Writeup
 
-    link rel="stylesheet" href="https://cdn.rawgit.com/sindresorhus/github-markdown-css/4cac7ec8c60d942e3bbc5327a397557ac4b3cda3/github-markdown.css"
+    /link rel="stylesheet" href="https://cdn.rawgit.com/sindresorhus/github-markdown-css/4cac7ec8c60d942e3bbc5327a397557ac4b3cda3/github-markdown.css"
+    link rel="stylesheet" href="assets/css/github-markdown.css"
     /script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"
 
-    link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/styles/tomorrow-night-bright.min.css"
-    script src="highlight.pack.js"
+    /link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/styles/tomorrow-night-bright.min.css"
+    link rel="stylesheet" href="assets/css/tomorrow-night-bright.css"
+    script src="assets/js/highlight.pack.js"
     script hljs.initHighlightingOnLoad();
     css:
       /* Table stuff */
@@ -42,28 +44,34 @@ html
         Arithmetic Quiz - Writeup
         =========================
 
-        Task 1
-        ------
+        Task 1 and 2
+        ------------
+        > #####Task 1
         > A primary school teacher wants a computer program to test the basic arithmetic skills of her students.
         > The program should generate a quiz consisting of a series of random questions, using in each case any two
         > numbers and addition, subtraction and multiplication. The system should ask the student's name, then ask 10
         > questions, output if the answer to each question is correct or not and produce a final score out of 10.
 
+        > #####Task 2
+        > The teacher wants to keep track of the scores each member of the class contains in the quiz. There are three
+        > classes in the school and the data should be kept separately for each class.
+
         ### Success Criteria:
         - It must be able to generate a quiz containing 10 questions. In order to properly test the students in
-          consecutive quizzes, the program should generate random questions instead of using a reset 10 questions every
-          time.
-        - The system must be able to ask the students name.
+          consecutive quizzes, the program should generate random questions instead of using a preset 10 questions
+          every time.
+        - The system must be able to ask the students name and class.
         - It must then show these questions to the student in a human-readable format so that the students can
           understand what the program is asking them to solve.
         - The student should be able to enter an answer to the question.
-        - The program should store the answers given so that a score can be given at the end of the quiz.
+        - The program should give a score at the end of the quiz.
+        - The program should also save the results of the quiz, and the name and class of the student.
 
         After I have written the code I will test that the program performs as expected against these success criteria.
 
         ### Design
         I have made a flow chart to show the high level structure of the program I will be writing.
-        <img src="flowchart1.png" height="1000" style="display: block; margin-left: auto; margin-right: auto" />
+        <img src="assets/image/flowchart1.png" height="1000" style="display: block; margin-left: auto; margin-right: auto" />
 
         Alternately, I could have made the program ask a question then ask an answer, but I believe this solution to be
         better suited to the medium which I have chosen to deliver this program on: the web.
@@ -83,12 +91,13 @@ html
 
         I have chosen to write the program which generated the HTML in a programming language called ruby because I am
         familiar with the language from previous projects and it has many tools already available for helping generate
-        and server webpages.
+        and serve webpages.
 
         In particular I will be using a web framework called "padrino" to help me write the web application. The padrino
         framework allows me to write in terms of models, views and controllers.
 
-        - Models represent the core data format of an application, in our case 'quiz' and 'student'.
+        - Models represent the core data format of an application, in our case 'quiz' and 'student'. They are usually
+          saved in a database so they can be retrieved later.
         - Views take the data stored in a model and display it to the student.
         - Controllers take requests from the user and perform alterations to the model.
 
@@ -125,6 +134,8 @@ html
         Models
         ------
         ### Question
+        Represents a single question in the quiz.
+        <p/>
     table
       tr
         td.markdown-body
@@ -322,7 +333,10 @@ html
               | end
     p
     .markdown-body
-      markdown: ### Student
+      markdown:
+        ### Student
+        Represents a student which has a class, firstname and lastname and a list of quizzes.
+        <p/>
     table
       tr
         td.markdown-body
@@ -367,10 +381,10 @@ html
         td
           .markdown-body
             markdown:
-              Finds the student's average score. Uses only completed quizzes because non-completed quizzes have no score.
-              Reduce is a function which iterates through every completed quiz, setting `e` to the current element and `a`
-              (accumulator) to the value returned from the previous element. The `0.0` specifies the first value for the
-              accumulator. The last line is essentially a shortened version of this code:
+              Finds the student's average score. Uses only completed quizzes because non-completed quizzes have no
+              score. Reduce is a function which iterates through every completed quiz, setting `e` to the current
+              element and `a` (accumulator) to the value returned from the previous element. The `0.0` specifies the
+              first value for the accumulator. The last line is essentially a shortened version of this code:
           pre
             code class="ruby"
               | accumulator = 0.0
@@ -380,8 +394,8 @@ html
                 return accumulator / quizzes.size
           .markdown-body
             markdown:
-              This code adds all the scores together and divides them by the number of quizzes which we all know is how we
-              get an average!
+              This code adds all the scores together and divides them by the number of quizzes which we all know is how
+              we get an average!
         td
           pre
             code class="ruby"
@@ -410,7 +424,10 @@ html
               | end
     p
     .markdown-body
-      markdown: ### Quiz
+      markdown:
+        ### Quiz
+        Represents a quiz which has been completed by a student and has questions and answers.
+        <p/>
     table
       tr
         td.markdown-body
@@ -723,12 +740,286 @@ html
               | end
     p
     .markdown-body
-      markdown: ### View
+      markdown:
+        Views
+        -----
+        Views use a language called `slim` which automates the generation of HTML. This allows me to write HTML in a
+        clear, light syntax without end tags. It works like python in that everything indented deeper than a tag is
+        "inside" that tag. Views are used using the `render` function that you see in my controller code.
+
+        ### Layout Template
+        The layout template is the basic template that all other templates inherit from. `== yield` is used to insert
+        the content of the template being rendered. This means I don't have to repeat the same basic HTML code on each
+        template.
+        <p/>
+    table width="100%"
+      tr
+        td.markdown-body
+          markdown:
+            This sets the `<!DOCTYPE html>` tag which must be at the top of every HTML page and opens the `<html>` tag
+            which all HTML code must be contained in.
+        td
+          pre
+            code class="slim"
+              | doctype html
+                html
+      tr
+        td.markdown-body
+          markdown:
+            The HTML `<head>` section contains metadata about the HTML page you are currently viewing such as the title
+            to be displayed in the tab or window bar and the stylesheets and javascript the page requires.
+
+            The `=` right after the `title` tag means that any text following is executed as ruby code. This particular
+            bit of code sets the page title to be `Arithmetic Quiz - ` followed by the title set in the controller.
+
+            Helper functions are then used to generate tags to include the css stylesheets and javascript code used on
+            my pages. My pages use the bootstrap css framework to help with formatting and laying out the page because
+            css layout from scratch takes a lot of work and it is better to use a simple pre-made solution.
+        td
+          pre
+            code class="slim"
+              |   head
+                    title = "Arithmetic Quiz - " + @title
+
+                    = stylesheet_link_tag "application", "bootstrap"
+                    = javascript_include_tag "jquery", "bootstrap"
+      tr
+        td.markdown-body
+          markdown:
+            The `<body>` section of code is where the visible content of the page is. Lines starting with a `#` or `.`
+            generate HTML `<div>` elements with their ID or class set, for example `#content` creates
+            `<div id="content">`.
+
+            The container and page-header classes are from the bootstrap CSS framework. The `container` class sets a
+            maximum width for the page creating the central column of all the webpages. The `page-header` class creates
+            a header for the page which contains the title set from the controller. It also yields to the individual
+            page-specific view templates inside the container.
+        td
+          pre
+            code class="slim"
+              |   body
+                    #content
+                      .container
+                        .page-header
+                          h1 = @title
+                        == yield
+      tr
+        td.markdown-body
+          markdown:
+            This creates the footer at the bottom of each page. `#content` is used to stop the page content being on top
+            of the footer.
+        td
+          pre
+            code class="slim"
+              |     footer
+                      .container
+                        p.text-muted.text-center
+                          | Project made by Chris Hobbs for the Computing GCSE "Arithmetic Quiz" task
+    p
+    .markdown-body
+      markdown:
+        ### Index
+        This view is rendered at the beginning of the quiz and asks the student for their firstname, lastname and class.
+        <p/>
+    table width="100%"
+      tr
+        td.markdown-body
+          markdown:
+            A lead paragraph explaining the quiz.
+        td
+          pre
+            code class="slim"
+              | p.lead
+                  | Test your maths skills with this arithmetic test!
+      tr
+        td.markdown-body
+          markdown:
+            A HTML form to submit the data back to the controller.
+
+            The form action is the `/quiz/start/` url which is in the quiz controller. The form contains several
+            form-groups (from bootstrap). Each form group has a label 2/12ths wide (`.col-sm-2`) and a input box
+            10/12ths wide (`.col-sm-10`). The input boxes are of type text, and the name attribute controls what name it
+            is accessible by in the `params` hash in the controller. Each input box also has a `required` attribute
+            which is new in HTML5. This means that the browser will prompt the student if they miss out a box.
+
+            There is also a button which is offset by 2/12ths to align it with the input boxes. The type is "submit"
+            which means that it submits the form when clicked.
+        td
+          pre
+            code class="slim"
+              | form.form-horizontal role="form" action="/quiz/start" method="GET"
+                  .form-group
+                    label.col-sm-2.control-label for="firstname" First Name
+                    .col-sm-10
+                      input.form-control#firstname type="text" name="firstname" required=""
+
+                  .form-group
+                    label.col-sm-2.control-label for="lastname" Last Name
+                    .col-sm-10
+                      input.form-control#lastname type="text" name="lastname" required=""
+
+                  .form-group
+                    label.col-sm-2.control-label for="class" Class
+                    .col-sm-10
+                      input.form-control#class type="text" name="class" required=""
+
+                  .form-group
+                    .col-sm-10.col-sm-offset-2
+                      button.btn.btn-primary type="submit" Start Test
+    p
+    .markdown-body
+      markdown:
+        Here is a screenshot of the rendered view:
+        <img src="assets/image/index_view_screenshot.png"/>
+
+        ### Quiz
+        This view renders the quiz page which shows the student the questions and a form for the answers.
+        <p/>
+    table width="100%"
+      tr
+        td.markdown-body
+          markdown:
+            A lead paragraph explaining the quiz.
+        td
+          pre
+            code class="slim"
+              | p.lead
+                  | Test your maths skills with this arithmetic test!
+      tr
+        td.markdown-body
+          markdown:
+            The form used for submitting the answers to the quiz. This form is quite similar to the form used on the
+            index form except that it it submits to a different URL.
+
+            Lines starting with `-` are executed as ruby code. This can lead to interesting code such as the
+            `@quiz.questions.each do |index, question|` code which adds a form group for every question in the quiz. The
+            label for the input box is set to be the `question.to_s` and the index is used as the input name so that we
+            can use `params[index]` in the controller. Each input box is required and the type is set to number so that
+            the user can only input numbers.
+
+            We also set a hidden input to the quiz id so that we can find the quiz in the database again when we submit.
+        td
+          pre
+            code class="slim"
+              | form.form-horizontal role="form" action="/quiz/finish" method="GET"
+                  - @quiz.questions.each do |index, question|
+                    .form-group id="question_\#{index}"
+                      label.col-sm-2.control-label for="question_\#{index}_input" = question.to_s
+                      .col-sm-10
+                        input.form-control id="question_\#{index}_input" type="number" name="\#{index}" required=""
+
+                  input type="hidden" name="id" value="\#{@quiz.id}"
+
+                  .form-group
+                    .col-sm-10.col-sm-offset-2
+                      button.btn.btn-primary type="submit" Submit Test
+    p
+    .markdown-body
+      markdown:
+        Here is a screenshot of the rendered view:
+        <img src="assets/image/quiz_view_screenshot.png"/>
+
+        ### Results
+        Renders the results of the quiz
+        <p/>
+    table width="100%"
+      tr
+        td.markdown-body
+          markdown:
+            Shows the score to the student
+        td
+          pre
+            code class="slim"
+              | h2 You scored \#{@quiz.score}/10!
+      tr
+        td.markdown-body
+          markdown:
+            For each quiz to answer pair, it shows either a `success` or `danger` panel, depending on whether the
+            student got the question correct. If it is correct it shows `\#{question} = \#{answer}` and the ok
+            glyphicon. If it is wrong, it shows `\#{question} != \#{answer}` and the remove glyphicon. It also shows the
+            correct answer in the panel body.
+        td
+          pre
+            code class="slim"
+              | p
+                  - @quiz.q_to_a_map.each do |question, answer|
+                    - if question.result == answer
+                      .panel.panel-success
+                        .panel-heading
+                          h3.panel-title.row
+                            .col-xs-8.text-left \#{question} = \#{answer}
+                            .col-xs-4.text-right
+                              span.glyphicon.glyphicon-ok
+                    - else
+                      .panel.panel-danger
+                        .panel-heading
+                          h3.panel-title.row
+                            .col-xs-8.text-left \#{question} != \#{answer}
+                            .col-xs-4.text-right
+                              span.glyphicon.glyphicon-remove
+                        .panel-body
+                          = question.show
+      tr
+        td.markdown-body
+          markdown:
+            It also shows a right-justified "Start Again" button which takes you back to the quiz index page. `url_for`
+            is a helper that takes a controller name and a path name and works out the URL to it.
+        td
+          pre
+            code class="slim"
+              | - if @show_back
+                  a.btn.btn-primary.pull-right#start-again href=url_for(:quiz, :index) Start Again
+    p
+    .markdown-body
+      markdown:
+        Here is a screenshot of the rendered view:
+        <img src="assets/image/results_view_screenshot.png"/>
+
+        Testing
+        -------
+        The above views, controllers and models come together to complete tasks 1 and 2. Lets check this against the
+        success criteria:
+
+        - It must be able to generate a quiz containing 10 questions. In order to properly test the students in
+          consecutive quizzes, the program should generate random questions instead of using a preset 10 questions every
+          time.
+          - The `Question` class represents one question and can be instantiated with random values. There is also a
+            `get` method to get a number (in this case 10) random questions.
+        - The system must be able to ask the students name and class.
+          - The index view contains a form to ask the students first name, last name and class.
+        - It must then show these questions to the student in a human-readable format so that the students can
+          understand what the program is asking them to solve.
+          - The quiz view shows the questions in a simple format that students can understand.
+        - The student should be able to enter an answer to the question.
+          - The quiz view has a form that allows the student to enter answers to the questions.
+        - The program should give a score at the end of the quiz.
+          - The results view shows the score and question-by-question results to the student.
+        - The program should also save the results of the quiz, and the name and class of the student.
+          - Each student and quiz is saved in a sqlite database and can be retrieved later.
+
+        Task 3
+        ======
+        > ##### Task 3
+        > The teacher wants to use the results from students taking these quizzes to log their performance. The system
+        > should store the last three scores for each student. The teacher would like to be able to output the results
+        > of the quiz for a particular class, sorted:
+
+        > - in alphabetical order with each student's highest score for the tests
+        > - by the highest score, highest to lowest
+        > - by the average score, highest to lowest.
+
+        ### Success Criteria:
+        - View a list of classes which links to a list of students in each class.
+        - View a list of students per-class with highest and average scores. The list should be sortable alphabetically
+          or by highest or average score.
+        - View a list of quizzes per-student and be able to view each quiz.
+
+        ### View Controller
     table
       tr
         td.markdown-body
           markdown:
-            #
+            The view controller. Used by teachers to view the students results.
         td
           pre
             code class="ruby"
@@ -736,7 +1027,11 @@ html
       tr
         td.markdown-body
           markdown:
-            #
+            Shows a list of classes with links to the view of students in a class.
+
+            The first lines creates a list of classes by selecting only distinct entries in the class column from the
+            students table then mapping the student entries to their class. It's convoluted and I would rather have used
+            plain SQL but for some reason that I can't remember it wasn't working... Whatever, it works!
         td
           pre
             code class="ruby"
@@ -749,7 +1044,7 @@ html
       tr
         td.markdown-body
           markdown:
-            #
+            A simple method to redirect links without a sort type to the alphabetical sort type.
         td
           pre
             code class="ruby"
@@ -759,7 +1054,12 @@ html
       tr
         td.markdown-body
           markdown:
-            #
+            Shows a list of students in each class, or all students if the class is "all".
+
+            After filtering by class (if needed), it switches by the sort type selected. If the type is alphabetical it
+            sorts by the last name. If the type is highest_score then it sorts by the highest score then reverses the
+            ordering to put the highest value first. A similar thing is done for the average score. If there is an
+            invalid sort type, it returns 404.
         td
           pre
             code class="ruby"
@@ -789,7 +1089,8 @@ html
       tr
         td.markdown-body
           markdown:
-            #
+            Shows all quizzes by a particular student. First it selects the student with the given ID, or returns 404 if
+            the student doesn't exist.
         td
           pre
             code class="ruby"
@@ -826,32 +1127,3 @@ html
           pre
             code class="ruby"
               | end
-
-    h2 Templates
-    table width="100%"
-      tr
-        td
-        td
-          pre
-            code class="slim"
-              | doctype html
-                html
-                  head
-                    title = "Arithmetic Quiz - " + @title
-
-                    = stylesheet_link_tag "application", "bootstrap"
-                    = javascript_include_tag "jquery", "bootstrap", "application"
-
-                    meta name="viewport" content="width=device-width, initial-scale=1"
-
-                  body
-                    #content
-                      .container
-                        .page-header
-                          h1 = @title
-                        == yield
-
-                    footer
-                      .container
-                        p.text-muted.text-center
-                          | Project made by RX14 for the Computing GCSE "Arithmetic Quiz" task
