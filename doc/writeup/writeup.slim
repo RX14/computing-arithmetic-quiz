@@ -4,20 +4,11 @@ html
     title Arithmetic Quiz - Writeup
 
     link rel="stylesheet" href="https://cdn.rawgit.com/sindresorhus/github-markdown-css/4cac7ec8c60d942e3bbc5327a397557ac4b3cda3/github-markdown.css"
-    /link rel="stylesheet" href="assets/css/github-markdown.css"
-    /script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"
 
     link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/styles/tomorrow-night-bright.min.css"
-    /link rel="stylesheet" href="assets/css/tomorrow-night-bright.css"
     script src="assets/js/highlight.pack.js"
     script hljs.initHighlightingOnLoad();
     css:
-      /* Table stuff */
-      table, th, td {
-        border-top: 1px solid black;
-        border-bottom: 1px solid black;
-      }
-
       table {
         table-layout: fixed;
         width: calc(100% + 16px);
@@ -32,6 +23,8 @@ html
 
       tr > td:nth-of-type(1) {
         padding: 15px;
+        border-top: 1px solid #c2c2c2;
+        border-bottom: 1px solid #c2c2c2;
       }
 
       tr > td:nth-of-type(2) {
@@ -997,6 +990,75 @@ html
         - The program should also save the results of the quiz, and the name and class of the student.
           - Each student and quiz is saved in a sqlite database and can be retrieved later.
 
+        There is a problem with manually testing your software though: your software often changes while you are
+        developing or maintaining it, and - because computer programs are extremely complex - you can never be sure that
+        a change in one seemingly unrelated part of the program will not break another part. This means that you have to
+        test very, very often. So why not automate it?
+
+        It turn out you can, it's called unit testing, and it's a well established practice in the industry! Let me
+        explain how my tests work by showing you the feature file for the quiz controller:
+    table
+      tr
+        td.markdown-body
+          markdown:
+            This is the `Quiz` feature, and it is written in a language called gherkin, which is remarkably similar to
+            english, which makes it easier to read for non-technical people who may want to read or discuss the feature.
+
+            The feature begins with a couple of lines of text explaining the usefulness of the feature to the end user.
+            This helps you to begin thinking about the point of the feature and its usefulness to the end user.
+        td
+          pre
+            code class="gherkin"
+              | Feature: Quiz
+                  In order to test my maths skills
+                  As a student
+                  I want to be able to take an arithmetic quiz
+      tr
+        td.markdown-body
+          markdown:
+            A scenario where we test that it collects the user info. The steps read as instructions to test, but how
+            does it know how to visit a URL? For each step I code a step definition in ruby to perform the actual
+            actions, but these are long, complicated and largely irrelevant to the main purpose of testing.
+
+            This scenario tests that if you type a name into the input form, then you see that name on the form when you
+            view the quiz.
+        td
+          pre
+            code class="gherkin"
+              |   Scenario: Collect user info
+                    Given I visit the url "/quiz"
+                    And I fill in "Test" for "firstname"
+                    And I fill in "User" for "lastname"
+                    And I fill in "Test Class" for "class"
+                    When I press "Start Test"
+                    Then I should see "Test User"
+      tr
+        td.markdown-body
+          markdown:
+            This scenario tests that there are actually 10 questions and 10 number input boxes
+        td
+          pre
+            code class="gherkin"
+              |   Scenario: Test the user
+                    Given a test
+                    Then I should see 10 questions
+                    Then I should see 10 number input boxes
+      tr
+        td.markdown-body
+          markdown:
+            Shows the score to the student
+        td
+          pre
+            code class="gherkin"
+              |   Scenario: Validate the results
+                    Given a test
+                    And I have filled out the test correctly
+                    When I press "Submit Test"
+                    Then I should see "You scored 10/10!"
+
+    p
+    .markdown-body
+      markdown:
         Task 3
         ======
         > ##### Task 3
@@ -1104,7 +1166,8 @@ html
       tr
         td.markdown-body
           markdown:
-            #
+            This method is almost exactly like the results view for the quiz controller, except that it doesn't display
+            the back button, which would lead to the wrong place if it was shown here.
         td
           pre
             code class="ruby"
@@ -1120,9 +1183,7 @@ html
                         render "quiz/results"
                     end
       tr
-        td.markdown-body
-          markdown:
-            #
+        td
         td
           pre
             code class="ruby"

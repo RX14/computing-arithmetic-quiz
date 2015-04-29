@@ -9,12 +9,6 @@
       hljs.initHighlightingOnLoad();
     </script>
     <style type="text/css">
-      /* Table stuff */
-      table, th, td {
-        border-top: 1px solid black;
-        border-bottom: 1px solid black;
-      }
-      
       table {
         table-layout: fixed;
         width: calc(100% + 16px);
@@ -29,6 +23,8 @@
       
       tr > td:nth-of-type(1) {
         padding: 15px;
+        border-top: 1px solid #c2c2c2;
+        border-bottom: 1px solid #c2c2c2;
       }
       
       tr > td:nth-of-type(2) {
@@ -1054,33 +1050,106 @@ understand what the program is asking them to solve.
 </ul></li>
 </ul>
 
-<h1>Task 3</h1>
+<p>There is a problem with manually testing your software though: your software often changes while you are
+developing or maintaining it, and - because computer programs are extremely complex - you can never be sure that
+a change in one seemingly unrelated part of the program will not break another part. This means that you have to
+test very, very often. So why not automate it?</p>
 
-<blockquote>
-<h5>Task 3</h5>
+<p>It turn out you can, it&#39;s called unit testing, and it&#39;s a well established practice in the industry! Let me
+explain how my tests work by showing you the feature file for the quiz controller:</p>
 
-<p>The teacher wants to use the results from students taking these quizzes to log their performance. The system
-should store the last three scores for each student. The teacher would like to be able to output the results
-of the quiz for a particular class, sorted:</p>
+    </div>
+    <table>
+      <tr>
+        <td class="markdown-body"><p>This is the <code>Quiz</code> feature, and it is written in a language called gherkin, which is remarkably similar to
+english, which makes it easier to read for non-technical people who may want to read or discuss the feature.</p>
 
-<ul>
-<li>in alphabetical order with each student&#39;s highest score for the tests</li>
-<li>by the highest score, highest to lowest</li>
-<li>by the average score, highest to lowest.</li>
-</ul>
-</blockquote>
+<p>The feature begins with a couple of lines of text explaining the usefulness of the feature to the end user.
+This helps you to begin thinking about the point of the feature and its usefulness to the end user.</p>
 
-<h3>Success Criteria:</h3>
-
-<ul>
-<li>View a list of classes which links to a list of students in each class.</li>
-<li>View a list of students per-class with highest and average scores. The list should be sortable alphabetically
-or by highest or average score.</li>
-<li>View a list of quizzes per-student and be able to view each quiz.</li>
-</ul>
-
-<h3>View Controller</h3>
-
+        </td>
+        <td>
+          <pre><code class="gherkin">Feature: Quiz
+  In order to test my maths skills
+  As a student
+  I want to be able to take an arithmetic quiz</code></pre>
+        </td>
+      </tr>
+      <tr>
+        <td class="markdown-body">
+          <p>A scenario where we test that it collects the user info. The steps read as instructions to test, but how
+          does it know how to visit a URL? For each step I code a step definition in ruby to perform the actual
+          actions, but these are long, complicated and largely irrelevant to the main purpose of testing.</p>
+          
+          <p>This scenario tests that if you type a name into the input form, then you see that name on the form when you
+          view the quiz.</p>
+          
+        </td>
+        <td>
+          <pre><code class="gherkin">  Scenario: Collect user info
+    Given I visit the url "/quiz"
+    And I fill in "Test" for "firstname"
+    And I fill in "User" for "lastname"
+    And I fill in "Test Class" for "class"
+    When I press "Start Test"
+    Then I should see "Test User"</code></pre>
+        </td>
+      </tr>
+      <tr>
+        <td class="markdown-body">
+          <p>This scenario tests that there are actually 10 questions and 10 number input boxes</p>
+          
+        </td>
+        <td>
+          <pre><code class="gherkin">  Scenario: Test the user
+    Given a test
+    Then I should see 10 questions
+    Then I should see 10 number input boxes</code></pre>
+        </td>
+      </tr>
+      <tr>
+        <td class="markdown-body">
+          <p>Shows the score to the student</p>
+          
+        </td>
+        <td>
+          <pre><code class="gherkin">  Scenario: Validate the results
+    Given a test
+    And I have filled out the test correctly
+    When I press "Submit Test"
+    Then I should see "You scored 10/10!"</code></pre>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <div class="markdown-body">
+      <h1>Task 3</h1>
+      
+      <blockquote>
+      <h5>Task 3</h5>
+      
+      <p>The teacher wants to use the results from students taking these quizzes to log their performance. The system
+      should store the last three scores for each student. The teacher would like to be able to output the results
+      of the quiz for a particular class, sorted:</p>
+      
+      <ul>
+      <li>in alphabetical order with each student&#39;s highest score for the tests</li>
+      <li>by the highest score, highest to lowest</li>
+      <li>by the average score, highest to lowest.</li>
+      </ul>
+      </blockquote>
+      
+      <h3>Success Criteria:</h3>
+      
+      <ul>
+      <li>View a list of classes which links to a list of students in each class.</li>
+      <li>View a list of students per-class with highest and average scores. The list should be sortable alphabetically
+      or by highest or average score.</li>
+      <li>View a list of quizzes per-student and be able to view each quiz.</li>
+      </ul>
+      
+      <h3>View Controller</h3>
+      
     </div>
     <table>
       <tr>
@@ -1175,6 +1244,8 @@ or by highest or average score.</li>
       </tr>
       <tr>
         <td class="markdown-body">
+          <p>This method is almost exactly like the results view for the quiz controller, except that it doesn&#39;t display
+          the back button, which would lead to the wrong place if it was shown here.</p>
           
         </td>
         <td>
@@ -1192,9 +1263,7 @@ or by highest or average score.</li>
         </td>
       </tr>
       <tr>
-        <td class="markdown-body">
-          
-        </td>
+        <td></td>
         <td>
           <pre><code class="ruby">end</code></pre>
         </td>
