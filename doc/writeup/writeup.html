@@ -2,8 +2,8 @@
 <html>
   <head>
     <title>Arithmetic Quiz - Writeup</title>
-    <link href="https://cdn.rawgit.com/sindresorhus/github-markdown-css/4cac7ec8c60d942e3bbc5327a397557ac4b3cda3/github-markdown.css" rel="stylesheet" />
-    <link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/styles/tomorrow-night-bright.min.css" rel="stylesheet" />
+    <link href="assets/css/github-markdown.css" rel="stylesheet" />
+    <link href="assets/css/tomorrow-night-bright.css" rel="stylesheet" />
     <script src="assets/js/highlight.pack.js"></script>
     <script>
       hljs.initHighlightingOnLoad();
@@ -29,6 +29,7 @@
       
       tr > td:nth-of-type(2) {
         background: black;
+        border-bottom: 1px solid black; /* OCD */
       }
     </style>
   </head>
@@ -1097,7 +1098,8 @@ This helps you to begin thinking about the point of the feature and its usefulne
       </tr>
       <tr>
         <td class="markdown-body">
-          <p>This scenario tests that there are actually 10 questions and 10 number input boxes</p>
+          <p>This scenario tests that there are actually 10 questions and 10 number input boxes in the quiz. This tests
+          that the right number of questions are presented to the user and that the user can answer each question.</p>
           
         </td>
         <td>
@@ -1109,7 +1111,7 @@ This helps you to begin thinking about the point of the feature and its usefulne
       </tr>
       <tr>
         <td class="markdown-body">
-          <p>Shows the score to the student</p>
+          <p>This tests that the student is given a score at the end of the quiz.</p>
           
         </td>
         <td>
@@ -1123,6 +1125,23 @@ This helps you to begin thinking about the point of the feature and its usefulne
     </table>
     <p></p>
     <div class="markdown-body">
+      <p>When run, the feature gives a result like this:</p>
+      
+      <p><img src="assets/image/feature_results_success.png"/></p>
+      
+      <p>If the test fails, it shows like this:</p>
+      
+      <p><img src="assets/image/feature_results_failure.png"/></p>
+      
+      <p>You can clearly see at what step the scenario failed, and an error message. In this case the page returned the
+      error message &quot;Class not given&quot;, which clearly did not have the string &quot;Test User&quot; in. This meant that the test
+      failed: although in this case the issue was that the test was deficient, not my code. I had only recently added
+      the &quot;class&quot; field, and had not updated the test to fill in the field with &quot;Test Class&quot;.</p>
+      
+      <p>Other issues I have discovered through testing is that if the generator generated two identical questions, it
+      would deduplicate the questions and there would be only 9 questions. I fixed this by giving each question a
+      unique identifier and using that to reference it instead of referencing it by it&#39;s string value.</p>
+      
       <h1>Task 3</h1>
       
       <blockquote>
@@ -1269,5 +1288,162 @@ This helps you to begin thinking about the point of the feature and its usefulne
         </td>
       </tr>
     </table>
+    <p></p>
+    <div class="markdown-body">
+      <h3>Index view</h3>
+      
+    </div>
+    <table>
+      <tr>
+        <td class="markdown-body">
+          <p>Shows a link to the all classes view to show a list of students from all classes.</p>
+          
+        </td>
+        <td>
+          <pre><code class="slim">p
+  a href="/view/class/all/sort/alphabetical" All Classes</code></pre>
+        </td>
+      </tr>
+      <tr>
+        <td class="markdown-body">
+          <p>For each class, adds a link to the list of students in each class.</p>
+          
+        </td>
+        <td>
+          <pre><code class="slim">- @classes.each do |cls|
+  p
+    a href="/view/class/#{URI.escape(cls)}/sort/alphabetical" = cls</code></pre>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <div class="markdown-body"><p>Here is a screenshot of the rendered view:
+<img src="assets/image/view_index_screenshot.png" /></p>
+
+<h3>Class view</h3>
+
+<p>This view uses HTML tables to show it&#39;s data. HTML tables consist of a list of <code>tr</code> (table row) elements which
+contain either <code>th</code> (table heading) or <code>td</code> (table data, like a cell in excel) elements.</p>
+
+    </div>
+    <table>
+      <tr>
+        <td class="markdown-body"><p>Creates a table, which uses the bootstrap css framework table style (<code>.table</code>) and uses <code>.table-hover</code> to
+make the student record the mouse is over stand out like this:</p>
+
+<p><img src="assets/image/table_hover.png" /></p>
+
+        </td>
+        <td>
+          <pre><code class="slim">table.table.table-hover</code></pre>
+        </td>
+      </tr>
+      <tr>
+        <td class="markdown-body"><p>Defines the headers for the table. <code>th</code> is the HTML tag for a table heading. I add links to the last name,
+average score and highest score buttons to sort by that column.</p>
+
+        </td>
+        <td>
+          <pre><code class="slim">  tr
+    th
+      a href="alphabetical" Last Name
+    th First Name
+    th Class
+    th
+      a href="average_score" Average Score
+    th
+      a href="highest_score" Highest Score</code></pre>
+        </td>
+      </tr>
+      <tr>
+        <td class="markdown-body"><p>For each student, create a row in the table. The row has the <code>.tr-linked</code> class to make the cursor into a
+&quot;link&quot; cursor when hovering over it. Another problem is that HTML does not let you make a link for a whole
+table row, so I had to use the javascript &quot;onclick&quot; handler to emulate the functionality.</p>
+
+        </td>
+        <td>
+          <pre><code class="slim">  - @students.each do |student|
+    tr.tr-linked onclick="location.href='#{url_for(:view, :student, student.id)}'"
+      td = student.lastname
+      td = student.firstname
+      td = student[:class]
+      td = student.average_score
+      td = student.highest_score</code></pre>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <div class="markdown-body">
+      <p>Here is a screenshot of the rendered view:
+      <img src="assets/image/view_class_screenshot.png" /></p>
+      
+      <h3>Student view</h3>
+      
+    </div>
+    <table>
+      <tr>
+        <td class="markdown-body">
+          <p>Same as above but with different headings.</p>
+          
+        </td>
+        <td>
+          <pre><code class="slim">table.table.table-hover
+  tr
+    th Test ID
+    th Student Name
+    th Finished
+    th Score</code></pre>
+        </td>
+      </tr>
+      <tr>
+        <td class="markdown-body"><p>Again, almost identical to the previous, but with different columns. Of note is the ternary operator
+<code>? ... : ...</code>. This operator evaluates the left hand side of the colon if the value before the <code>?</code> is true,
+otherwise it evaluates the right hand side. This is really useful for single-line if statements.</p>
+
+<p>In this case if the test is finished it shows &quot;yes&quot;, otherwise &quot;no&quot;.</p>
+
+        </td>
+        <td>
+          <pre><code class="slim">  - @student.quizzes.each do |test|
+    tr.tr-linked onclick="location.href='#{url_for(:view, :test, test.id)}'"
+      td = test.id
+      td = @student.name
+      td = test.finished ? "yes" : "no"
+      td = test.score</code></pre>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <div class="markdown-body">
+      <p>Here is a screenshot of the rendered view:
+      <img src="assets/image/view_student_screenshot.png" /></p>
+      
+      <h2>Testing</h2>
+      
+      <p>Let&#39;s check against the success criteria again:</p>
+      
+      <ul>
+      <li>View a list of classes which links to a list of students in each class.
+      
+      <ul>
+      <li>The index view shows a list of all classes, with links to a per-class list of students.</li>
+      </ul></li>
+      <li>View a list of students per-class with highest and average scores. The list should be sortable alphabetically
+      or by highest or average score.
+      
+      <ul>
+      <li>The class view shows a list of students with last name, first name, class, average score and highest score
+      for each student. You can sort by last name, average score and highest score. Clicking on a student takes
+      you to a list of quizzes performed by that student.</li>
+      </ul></li>
+      <li>View a list of quizzes per-student and be able to view each quiz.
+      
+      <ul>
+      <li>The student view shows a list of quizzes the student has performed and clicking on a quiz takes you to the
+      results page of that quiz with an identical view to the results page shown to students.</li>
+      </ul></li>
+      </ul>
+      
+    </div>
   </body>
 </html>
