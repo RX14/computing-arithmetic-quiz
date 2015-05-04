@@ -21,3 +21,45 @@ Given(/^I have filled out the test correctly$/) do
         find("input#question_#{i}_input").set(question.result)
     end
 end
+
+Given(/^the following quizzes exist for the student "(.+)":$/) do |user, table|
+    table = table.hashes
+    table.each do |row|
+        questions = {}
+        answers = {}
+
+        if row["score"].nil?
+            i = 1
+            loop do
+                question_str = "Q#{i}"
+                break if row[question_str].nil?
+
+                question, answer = row[question_str].split("=")
+
+                questions[i] = question
+                answers[i] = answer
+
+                i += 1
+            end
+        else
+            score, total = row["score"].split("/")
+            score = score.to_i
+
+            total.to_i.times do |i|
+                questions[i] = "0+0"
+                if score > 0
+                    answers[i] = "0"
+                else
+                    answers[i] = "1"
+                end
+
+                score -= 1
+            end
+        end
+
+        Quiz.create finished: row["finished"] == "true",
+                    questions: questions,
+                    answers: answers,
+                    student: Student.each { |s| break s if s.name == user }
+    end
+end

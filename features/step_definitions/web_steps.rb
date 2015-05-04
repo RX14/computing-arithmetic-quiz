@@ -19,3 +19,10 @@ Then(/^I should see (\d+) (.*) input boxes$/) do |amount, type|
     result = all("input[type=\"#{type}\"]").count
     fail("Expected #{amount} #{type} input boxes, had #{result}.") unless result == amount
 end
+
+Then(/^I should see the table:$/) do |expected_table|
+    html_table = first("table").all("tr").map do |tr|
+        tr.all("th, td").map { |td| td.text.gsub(/<.+?>/, "").gsub(/[\n\t\r]/, "") }
+    end
+    expected_table.diff!(html_table, surplus_col: true, misplaced_col: true)
+end
