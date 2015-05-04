@@ -1345,3 +1345,129 @@ html
         - View a list of quizzes per-student and be able to view each quiz.
           - The student view shows a list of quizzes the student has performed and clicking on a quiz takes you to the
             results page of that quiz with an identical view to the results page shown to students.
+
+        Here is the scenario I use to test the view controller:
+    table
+      tr
+        td.markdown-body
+          markdown:
+            The `View` feature.
+        td
+          pre
+            code class="gherkin"
+              | Feature: View
+                  In order to help students learn
+                  As a teacher
+                  I want to view students results and mistakes
+      tr
+        td.markdown-body
+          markdown:
+            This scenario tests that the `/view` index page shows a list of all the unique classes and the "All Classes"
+            link.
+        td
+          pre
+            code class="gherkin"
+              |   Scenario: View classes list
+                    Given the following students exist:
+                      | firstname | lastname | class      |
+                      | Test      | User 1   | TestClass1 |
+                      | Test      | User 2   | TestClass1 |
+                      | Test      | User 3   | TestClass2 |
+                      | Test      | User 4   | TestClass3 |
+                      | Test      | User 5   | TestClass2 |
+                      | Test      | User 6   | TestClass1 |
+                    When I visit the url "/view"
+                    Then I should see "TestClass1"
+                    And  I should see "TestClass2"
+                    And  I should see "TestClass3"
+                    And  I should see "All Classes"
+      tr
+        td.markdown-body
+          markdown:
+            This scenario adds a few test users, creates some fake quizzes for those users, then tests several things:
+
+            - That `/view/class/all/` redirects to `/view/class/all/sort/alphabetical/`,
+            - That sorting by highest score and average score works,
+            - That viewing by class works.
+        td
+          pre
+            code class="gherkin"
+              |   Scenario: View a class
+                    Given the following students exist:
+                      | firstname | lastname | class     |
+                      | Test      | User 1   | TestClass |
+                      | Test      | User 2   | TestClass |
+                      | Test      | User 3   | TestClass |
+                    And the following quizzes exist for the student "Test User 1":
+                      | score | finished |
+                      | 5/10  | true     |
+                      | 5/10  | true     |
+                      | 5/10  | true     |
+                    And the following quizzes exist for the student "Test User 2":
+                      | score | finished |
+                      | 10/10 | true     |
+                      | 0/10  | true     |
+                      | 0/10  | true     |
+                      | 0/10  | true     |
+                    And the following quizzes exist for the student "Test User 3":
+                      | score | finished |
+                      | 0/10  | true     |
+                      | 0/10  | true     |
+                      | 0/10  | true     |
+                      | 0/10  | true     |
+                    When I visit the url "/view/class/all/"
+                    Then I should see the table:
+                      | Last Name | First Name | Class     | Average Score | Highest Score |
+                      | User 1    | Test       | TestClass | 5.0           | 5             |
+                      | User 2    | Test       | TestClass | 2.5           | 10            |
+                      | User 3    | Test       | TestClass | 0.0           | 0             |
+                    When I visit the url "/view/class/all/sort/highest_score"
+                    Then I should see the table:
+                      | Last Name | First Name | Class     | Average Score | Highest Score |
+                      | User 2    | Test       | TestClass | 2.5           | 10            |
+                      | User 1    | Test       | TestClass | 5.0           | 5             |
+                      | User 3    | Test       | TestClass | 0.0           | 0             |
+                    When I visit the url "/view/class/TestClass/sort/average_score"
+                    Then I should see the table:
+                      | Last Name | First Name | Class     | Average Score | Highest Score |
+                      | User 1    | Test       | TestClass | 5.0           | 5             |
+                      | User 2    | Test       | TestClass | 2.5           | 10            |
+                      | User 3    | Test       | TestClass | 0.0           | 0             |
+      tr
+        td.markdown-body
+          markdown:
+            This tests that the teacher can view a single student's quizzes.
+        td
+          pre
+            code class="gherkin"
+              |   Scenario: View a student
+                    Given the following students exist:
+                      | firstname | lastname | class     |
+                      | Test      | User 1   | TestClass |
+                    And the following quizzes exist for the student "Test User 1":
+                      | score | finished |
+                      | 10/10 | true     |
+                      | 0/10  | false    |
+                      | 5/10  | true     |
+                    When I visit the url "/view/student/1"
+                    Then I should see the table:
+                      | Test ID | Student Name | Finished | Score |
+                      | 1       | Test User 1  | yes      | 10    |
+                      | 2       | Test User 1  | no       | 0     |
+                      | 3       | Test User 1  | yes      | 5     |
+      tr
+        td.markdown-body
+          markdown:
+            This tests that the viewing of tests from the view controller works.
+        td
+          pre
+            code class="gherkin"
+              |   Scenario: View a test
+                    Given the following students exist:
+                      | firstname | lastname  | class     |
+                      | Test      | Student 1 | TestClass |
+                    Given the following quizzes exist for the student "Test Student 1":
+                      | score | finished |
+                      | 10/10 | true     |
+                    When I visit the url "/view/test/1"
+                    Then I should see "You scored 10/10!"

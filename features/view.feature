@@ -16,6 +16,7 @@ Feature: View
     Then I should see "TestClass1"
     And  I should see "TestClass2"
     And  I should see "TestClass3"
+    And  I should see "All Classes"
 
   Scenario: View a class
     Given the following students exist:
