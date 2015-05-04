@@ -45,7 +45,7 @@ Given(/^the following quizzes exist for the student "(.+)":$/) do |user, table|
             score, total = row["score"].split("/")
             score = score.to_i
 
-            total.to_i.times do |i|
+            total.to_i.times do |i| # rubocop:disable Lint/ShadowingOuterLocalVariable
                 questions[i] = "0+0"
                 if score > 0
                     answers[i] = "0"
