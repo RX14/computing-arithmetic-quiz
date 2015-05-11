@@ -1,6 +1,6 @@
 FROM ruby:2.1.3
 
-ADD Gemfile /app/
+ADD Gemfile Gemfile.lock /app/
 WORKDIR /app/
 
 RUN bundle install
