@@ -7,4 +7,6 @@ RUN bundle install
 
 ADD . /app/
 
+RUN rake sq:migrate:down && rake sq:migrate:up
+
 ENTRYPOINT ["/usr/local/bundle/bin/bundle", "exec", "puma"]
