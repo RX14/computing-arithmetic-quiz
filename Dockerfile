@@ -7,6 +7,9 @@ RUN bundle install
 
 ADD . /app/
 
+ENV RACK_ENV production
+
 RUN rake sq:migrate:down && rake sq:migrate:up
 
 ENTRYPOINT ["/usr/local/bundle/bin/bundle", "exec", "puma"]
+EXPOSE 80
